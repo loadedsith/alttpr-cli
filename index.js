@@ -6,11 +6,19 @@ const loadFile = (file) => {
   console.log({file});
   return ROM(fs.readFileSync(file), (rom) => {
     console.log('loaded');
-    rom.setBasePatch(require('./base_patch.json'))
-    rom.reset().then((rom_) => {
+    let patch = require('./base_patch.json');
+    let daily = require('./daily.json');
+    rom.setBasePatch(patch)
 
-      save(downloadFilename() + '.sfc');
-    })
+    rom.parsePatch(daily).then((rom) => {
+        rom.setBasePatch(patch);
+        rom.save('n_' + downloadFilename() + '.sfc');
+    });
+
+    // rom.reset().then((rom_) => {
+    //   parsePatch();
+    //   save(downloadFilename() + '.sfc');
+    // })
   }, () => {
     console.log('error')
   })
