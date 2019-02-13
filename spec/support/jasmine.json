@@ -1,0 +1,11 @@
+{
+  "spec_files": [
+    "!node_modules/**/*.js",
+    "**/*_test.js"
+  ],
+  "helpers": [
+    "helpers/**/*.js"
+  ],
+  "stopSpecOnExpectationFailure": false,
+  "random": true
+}
