@@ -1,38 +1,21 @@
 const SparkMD5 = require('spark-md5');
 const FileSaver = require('file-saver');
+const fs = require('fs');
 
-var ROM = (function(blob, loaded_callback, error_callback) {
+
+var ROM = (function(arrayBuffer, loaded_callback, error_callback) {
   var u_array = [];
-  var arrayBuffer;
   var base_patch;
   var original_data;
   var size = 2; // mb
 
-  var fileReader = new FileReader();
+  // arrayBuffer = this.result;
 
-  fileReader.onload = function() {
-    arrayBuffer = this.result;
-  };
-
-  fileReader.onloadend = function() {
-    if (typeof arrayBuffer === 'undefined') {
-      if (error_callback) error_callback();
-      return;
-    }
-    // Check rom for header and cut it out
-    if (arrayBuffer.byteLength % 0x400 == 0x200) {
-      arrayBuffer = arrayBuffer.slice(0x200, arrayBuffer.byteLength);
-    }
-
-    original_data = arrayBuffer.slice(0);
-    this.resize(size);
-
-    u_array = new Uint8Array(arrayBuffer);
-
-    if (loaded_callback) loaded_callback(this);
-  }.bind(this);
-
-  fileReader.readAsArrayBuffer(blob);
+  // if (typeof arrayBuffer === 'undefined') {
+  //   if (error_callback) error_callback();
+  //   return;
+  // }
+  // Check rom for header and cut it out
 
   this.checkMD5 = function() {
     return SparkMD5.ArrayBuffer.hash(arrayBuffer);
@@ -73,7 +56,7 @@ var ROM = (function(blob, loaded_callback, error_callback) {
 
   this.save = function(filename) {
     this.updateChecksum().then(function() {
-      FileSaver.saveAs(new Blob([u_array]), filename);
+      fs.writeFileSync(filename, Buffer.from( new Uint8Array(u_array) ))
     });
   };
 
@@ -289,7 +272,7 @@ var ROM = (function(blob, loaded_callback, error_callback) {
       + (this.special ? '_special' : '');
   };
 
-  this.reset = function(size) {
+  this.reset = function() {
     return new Promise((resolve, reject) => {
       arrayBuffer = original_data.slice(0);
       // always reset to 2mb so we can verify MD5 later
@@ -306,6 +289,18 @@ var ROM = (function(blob, loaded_callback, error_callback) {
       });
     });
   };
+
+  if (arrayBuffer.byteLength % 0x400 == 0x200) {
+    arrayBuffer = arrayBuffer.slice(0x200, arrayBuffer.byteLength);
+  }
+
+  original_data = arrayBuffer.slice(0);
+
+  this.resize(size);
+
+  u_array = new Uint8Array(arrayBuffer);
+
+  if (loaded_callback) loaded_callback(this);
 });
 
 module.exports = ROM;
