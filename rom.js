@@ -1,21 +1,10 @@
 const SparkMD5 = require('spark-md5');
-const FileSaver = require('file-saver');
 const fs = require('fs');
-
 
 var ROM = (function(arrayBuffer, loaded_callback, error_callback) {
   var u_array = [];
-  var base_patch;
   var original_data;
   var size = 2; // mb
-
-  // arrayBuffer = this.result;
-
-  // if (typeof arrayBuffer === 'undefined') {
-  //   if (error_callback) error_callback();
-  //   return;
-  // }
-  // Check rom for header and cut it out
 
   this.checkMD5 = function() {
     return SparkMD5.ArrayBuffer.hash(arrayBuffer);
@@ -40,8 +29,8 @@ var ROM = (function(arrayBuffer, loaded_callback, error_callback) {
   };
 
   this.updateChecksum = function() {
-    return new Promise(function(resolve, reject) {
-      var sum = u_array.reduce(function(sum, mbyte, i) {
+    return new Promise((resolve, reject) => {
+      var sum = u_array.reduce((sum, mbyte, i) => {
         if (i >= 0x7FDC && i < 0x7FE0) {
           return sum;
         }
@@ -51,20 +40,24 @@ var ROM = (function(arrayBuffer, loaded_callback, error_callback) {
       var inverse = checksum ^ 0xFFFF;
       this.write(0x7FDC, [inverse & 0xFF, inverse >> 8, checksum & 0xFF, checksum >> 8]);
       resolve(this);
-    }.bind(this));
-  }.bind(this);
+    });
+  }
 
-  this.save = function(filename) {
-    this.updateChecksum().then(function() {
-      fs.writeFileSync(filename, Buffer.from( new Uint8Array(u_array) ))
+  this.save = (filename) => {
+    this.updateChecksum().then(() => {
+      fs.writeFile(filename, Buffer.from(new Uint8Array(u_array)));
     });
   };
 
-  this.parseSprGfx = function(spr) {
-    if ('ZSPR' == String.fromCharCode(spr[0]) + String.fromCharCode(spr[1]) + String.fromCharCode(spr[2]) + String.fromCharCode(spr[3])) {
+  this.parseSprGfx = (spr) => {
+    if ('ZSPR' == String.fromCharCode(spr[0]) +
+        String.fromCharCode(spr[1]) +
+        String.fromCharCode(spr[2]) +
+        String.fromCharCode(spr[3])) {
       return this.parseZsprGfx(spr);
     }
-    return new Promise(function(resolve, reject) {
+
+    return new Promise((resolve, reject) => {
       for (var i = 0; i < 0x7000; i++) {
         u_array[0x80000 + i] = spr[i];
       }
@@ -77,10 +70,10 @@ var ROM = (function(arrayBuffer, loaded_callback, error_callback) {
       u_array[0xDEDF7] = spr[0x7054];
       u_array[0xDEDF8] = spr[0x7055];
       resolve(this);
-    }.bind(this));
-  }.bind(this);
+    });
+  };
 
-  this.parseZsprGfx = function(zspr) {
+  this.parseZsprGfx = (zspr) => {
     // we are going to just hope that it's in the proper format O.o
     return new Promise(function(resolve, reject) {
       var gfx_offset =  zspr[12] << 24 | zspr[11] << 16 | zspr[10] << 8 | zspr[9];
@@ -99,26 +92,26 @@ var ROM = (function(arrayBuffer, loaded_callback, error_callback) {
       }
       resolve(this);
     }.bind(this));
-  }.bind(this);
+  };
 
-  this.setQuickswap = function(enable) {
-    return new Promise(function(resolve, reject) {
+  this.setQuickswap = (enable=false) => {
+    return new Promise((resolve, reject) => {
       this.write(0x18004B, enable ? 0x01 : 0x00);
       resolve(this);
-    }.bind(this));
-  }.bind(this);
+    });
+  };
 
-  this.setMusicVolume = function(enable) {
-    return new Promise(function(resolve, reject) {
+  this.setMusicVolume = (enable=true) => {
+    return new Promise((resolve, reject) => {
       this.write(0x0CFE18, !enable ? 0x00 : 0x70);
       this.write(0x0CFEC1, !enable ? 0x00 : 0xC0);
       this.write(0x0D0000, !enable ? [0x00, 0x00] : [0xDA, 0x58]);
       this.write(0x0D00E7, !enable ? [0xC4, 0x58] : [0xDA, 0x58]);
       resolve(this);
-    }.bind(this));
-  }.bind(this);
+    });
+  };
 
-  this.setMenuSpeed = function(speed) {
+  this.setMenuSpeed = function(speed='normal') {
     return new Promise(function(resolve, reject) {
       var fast = false;
       switch (speed) {
@@ -144,7 +137,7 @@ var ROM = (function(arrayBuffer, loaded_callback, error_callback) {
     }.bind(this));
   }.bind(this);
 
-  this.setHeartColor = function(color_on) {
+  this.setHeartColor = function(color_on='red') {
     return new Promise(function(resolve, reject) {
       switch (color_on) {
         case 'blue':
@@ -179,14 +172,22 @@ var ROM = (function(arrayBuffer, loaded_callback, error_callback) {
     }.bind(this));
   }.bind(this);
 
-  this.setHeartSpeed = function(speed) {
+  this.setHeartSpeed = function(speed='half') {
     return new Promise(function(resolve, reject) {
       var sbyte = 0x20;
       switch (speed) {
-        case 'off': sbyte = 0x00; break;
-        case 'half': sbyte = 0x40; break;
-        case 'quarter': sbyte = 0x80; break;
-        case 'double': sbyte = 0x10; break;
+        case 'off':
+          sbyte = 0x00;
+        break;
+        case 'half':
+          sbyte = 0x40;
+        break;
+        case 'quarter':
+          sbyte = 0x80;
+        break;
+        case 'double':
+          sbyte = 0x10;
+        break;
       }
       this.write(0x180033, sbyte);
       resolve(this);
@@ -219,7 +220,9 @@ var ROM = (function(arrayBuffer, loaded_callback, error_callback) {
       }
       if (data.patch && data.patch.length) {
         data.patch.forEach(function(value, index, array) {
-          if (progressCallback) progressCallback(index / data.patch.length, this);
+          if (progressCallback) {
+            progressCallback(index / data.patch.length, this);
+          }
           for (address in value) {
             this.write(Number(address), value[address]);
           }
@@ -238,7 +241,8 @@ var ROM = (function(arrayBuffer, loaded_callback, error_callback) {
       len = baseArrayBuffer.byteLength,
       resizeLen = (len > newByteSize)? newByteSize : len;
 
-    (new Uint8Array(resizedArrayBuffer, 0, resizeLen)).set(new Uint8Array(baseArrayBuffer, 0, resizeLen));
+    (new Uint8Array(resizedArrayBuffer, 0, resizeLen))
+        .set(new Uint8Array(baseArrayBuffer, 0, resizeLen));
 
     return resizedArrayBuffer;
   };
@@ -276,7 +280,7 @@ var ROM = (function(arrayBuffer, loaded_callback, error_callback) {
     return new Promise((resolve, reject) => {
       arrayBuffer = original_data.slice(0);
       // always reset to 2mb so we can verify MD5 later
-      this.resize(2);
+      this.resize(size);
 
       if (!this.base_patch) {
         reject('base patch not set');
@@ -296,16 +300,9 @@ var ROM = (function(arrayBuffer, loaded_callback, error_callback) {
 
   original_data = arrayBuffer.slice(0);
 
-  this.resize(size);
-
   u_array = new Uint8Array(arrayBuffer);
-
+  this.resize(2);
   if (loaded_callback) loaded_callback(this);
 });
 
 module.exports = ROM;
-
-
-
-// WEBPACK FOOTER //
-// ./resources/assets/js/rom.js
