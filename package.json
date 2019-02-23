@@ -8,12 +8,11 @@
     "test-inspect": "node --inspect-brk  ./node_modules/jasmine/bin/jasmine.js",
     "watch-test-inspect": "nodemon --ignore bundle.js --ext js,jade --exec 'npm run test-inspect'",
     "watch-test": "nodemon --ignore bundle.js --ext js,jade --exec 'npm run test'",
-    "watch": "nodemon --ignore bundle.js --ext js,jade --exec 'npm run build'",
-    "build": "npx browserify index.js -o bundle.js"
+    "watch": "nodemon --ignore bundle.js --ext js,jade --exec 'npm run build'"
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {
+  "dependencies": {
     "b64-to-blob": "^1.2.19",
     "blob": "0.0.5",
     "file-api": "^0.10.4",
@@ -26,6 +25,5 @@
     "puppeteer": "^1.12.2",
     "spark-md5": "^3.0.0",
     "yargs": "^13.2.0"
-  },
-  "dependencies": {}
+  }
 }
