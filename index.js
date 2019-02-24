@@ -21,14 +21,20 @@ const patchRomFromJSON = (rom) => {
 };
 
 
-const buildRom = (file, quickswap=false, musicVolume=false, menuSpeed='normal',
-    heartColor='red', heartSpeed='half', spriteName='001.link.1.zspr') => {
+const buildRom = (file,
+    quickswap=false,
+    musicVolume=false,
+    menuSpeed='normal',
+    heartColor='red',
+    heartSpeed='half',
+    spriteName='./sprites/001.link.1.zspr') => {
   return new ROM(fs.readFileSync(file), (rom) => {
     patchRomFromJSON(rom).then((rom) => {
       if (rom.checkMD5() != current_rom_hash) {
         console.log('error', 'error.bad_file');
         return;
       }
+
       rom.parsePatch(daily).then((rom) => {
         rom.setQuickswap(quickswap);
         rom.setMusicVolume(musicVolume);
@@ -37,14 +43,6 @@ const buildRom = (file, quickswap=false, musicVolume=false, menuSpeed='normal',
         rom.setHeartSpeed(heartSpeed);
         let sprite = fs.readFileSync(`./${spriteName}`);
         rom.parseSprGfx(sprite);
-        console.log({
-          quickswap,
-          musicVolume,
-          menuSpeed,
-          heartColor,
-          heartSpeed,
-          spriteName
-        });
         rom.save('n_' + rom.downloadFilename() + '.sfc');
       })
     }).catch((e) => {
