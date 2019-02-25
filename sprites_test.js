@@ -69,7 +69,12 @@ describe('Sprites', () => {
   });
 
   it('should download a sprite', (done) => {
+    fs.unlink('./spec/sprites/workspace/001.link.1.zspr');
+
     downloadSprite(spriteNames[0], 'spec/sprites/workspace').then(() => {
+      expect(fs.existsSync('./spec/sprites/workspace/001.link.1.zspr'))
+          .toBe(true);
+
       done();
     });
   });
