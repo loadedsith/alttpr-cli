@@ -7,7 +7,7 @@ Somewhere on your system you must have a file that contains the following game:
 
 Zelda no Densetsu - Kamigami no Triforce (Japan).sfc - 3322EFFC
 
-![http://alttp.mymm1.com/game/findrom.png]
+![Google 3322EFFC to ensure you've got the right rom](http://alttp.mymm1.com/game/findrom.png)
 
 An internet connection. This program was designed with an internet connection in mind. If you have a reason to run it without, let me know what that is, and maybe we can help you out.
 
