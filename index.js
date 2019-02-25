@@ -2,7 +2,6 @@ const ROM = require('./rom.js');
 const {getSprite} = require('./sprites.js');
 const fs = require('fs');
 const vt_base_patch = require('./vt_base_patch.json');
-const daily = require('./daily.json');
 const current_rom_hash = require('./current_rom_hash.json');
 
 const s3_prefix = "https://s3.us-east-2.amazonaws.com/alttpr-patches";
@@ -27,8 +26,9 @@ const buildRom = (file,
     musicVolume=false,
     menuSpeed='normal',
     heartColor='red',
-    heartSpeed='half',
-    spriteName='Link') => {
+    heartSpeed='normal',
+    spriteName='Link',
+    patch='./daily.json') => {
   let readyRom = new Promise((resolve, reject) => {
     new ROM(fs.readFileSync(file), (rom) => {
         patchRomFromJSON(rom).then((rom) => {
@@ -38,7 +38,7 @@ const buildRom = (file,
             return;
           }
 
-          rom.parsePatch(daily).then(() => {
+          rom.parsePatch(require(patch)).then(() => {
             resolve(rom);
           });
 
@@ -52,9 +52,13 @@ const buildRom = (file,
   ]).then(([sprite, rom]) => {
     rom.setQuickswap(quickswap);
     rom.setMusicVolume(musicVolume);
-    rom.setMenuSpeed(menuSpeed);
     rom.setHeartColor(heartColor);
-    rom.setHeartSpeed(heartSpeed);
+    if (menuSpeed && menuSpeed !== 'normal') {
+      rom.setMenuSpeed(menuSpeed);
+    }
+    if (heartSpeed && heartSpeed !== 'normal') {
+      rom.setHeartSpeed(heartSpeed);
+    }
     rom.parseSprGfx(sprite);
     rom.save('n_' + rom.downloadFilename() + '.sfc');
   }).catch((e) => {

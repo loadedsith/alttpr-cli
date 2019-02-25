@@ -6,7 +6,7 @@ const fs = require('fs');
 const path = require('path');
 const nock = require('nock');
 
-const scope = nock('http://s3.us-east-2.amazonaws.com')
+const scope = nock('https://s3.us-east-2.amazonaws.com')
   .get(/(.*)/)
   .reply(200, (uri, requestBody, cb) => {
     const spriteName =

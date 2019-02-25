@@ -1,4 +1,4 @@
-const http = require('http');
+const https = require('https');
 const fs = require('fs');
 const url = require('url');
 const path = require('path');
@@ -35,12 +35,10 @@ const getSpriteFileName = (spriteName) => {
   return path.basename(url.parse(getSpriteUrl(spriteName)).pathname);
 };
 
-const downloadSprite = (spriteName, outDir = 'sprites', http_ = http) => {
+const downloadSprite = (spriteName, outDir = 'sprites', https_ = https) => {
   return new Promise((resolve, reject) => {
     const spriteUrl = getSpriteUrl(spriteName);
-
-    http_.get(spriteUrl, (response) => {
-      console.log({[spriteName]:response.statusCode});
+    https_.get(spriteUrl, (response) => {
       if (response.statusCode == 200 && response.statusCode < 299) {
         const filename = getSpriteFileName(spriteName);
         const file = fs.createWriteStream(`./${outDir}/${filename}`);
