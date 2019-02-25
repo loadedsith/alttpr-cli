@@ -47,24 +47,28 @@ const buildRom = (file,
     });
   })
 
-  return Promise.all([
-    getSprite(spriteName),
-    readyRom,
-  ]).then(([sprite, rom]) => {
-    rom.setQuickswap(quickswap);
-    rom.setMusicVolume(musicVolume);
-    rom.setHeartColor(heartColor);
-    if (menuSpeed && menuSpeed !== 'normal') {
-      rom.setMenuSpeed(menuSpeed);
-    }
-    if (heartSpeed && heartSpeed !== 'normal') {
-      rom.setHeartSpeed(heartSpeed);
-    }
-    rom.parseSprGfx(sprite);
-    rom.save(`${savePath}n_${rom.downloadFilename()}.sfc`);
-  }).catch((e) => {
-    console.log('error', e)
-  });
+  return new Promise((resolve, reject) => {
+    Promise.all([
+        getSprite(spriteName),
+        readyRom,
+      ]).then(([sprite, rom]) => {
+        rom.setQuickswap(quickswap);
+        rom.setMusicVolume(musicVolume);
+        rom.setHeartColor(heartColor);
+        if (menuSpeed && menuSpeed !== 'normal') {
+          rom.setMenuSpeed(menuSpeed);
+        }
+        if (heartSpeed && heartSpeed !== 'normal') {
+          rom.setHeartSpeed(heartSpeed);
+        }
+        rom.parseSprGfx(sprite);
+        rom.save(`${savePath}${rom.downloadFilename()}.sfc`);
+        resolve(rom)
+      }).catch((e) => {
+        console.log('error', e)
+        reject(e);
+      });
+  })
 
 }
 

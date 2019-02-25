@@ -11,6 +11,7 @@ const {
   heartColor,
   heartSpeed,
   spriteName,
+  spoiler,
 } = require('yargs')
     .usage('Usage: $0 <command> [options]')
 
@@ -58,6 +59,11 @@ const {
     .describe('s', 'Health alert tone frequency. Choices instant, fast, ' +
         'normal, or slow')
 
+    .alias('z', 'spoiler')
+    .nargs('z',  1)
+    .default('z', false)
+    .describe('z', 'Print spoiler log after building')
+
     .alias('m', 'menuSpeed')
     .nargs('m',  1)
     .default('m', 'normal')
@@ -78,7 +84,7 @@ const {
     .alias('?', 'help')
     .argv
 
-console.log('Building rom with these settings: ');
+console.log('Building rom with these customizations: ');
 console.log({
   quickswap,
   musicVolume,
@@ -94,6 +100,31 @@ randomizerCLI.buildRom(rom,
   heartColor,
   heartSpeed,
   spriteName,
-).then(() => {
-  console.log('built!')
+).then((rom) => {
+  console.log('Building rom with these patch settings: ');
+
+  console.log({
+    logic: rom.logic,
+    difficulty: rom.difficulty,
+    mode: rom.mode,
+    name: rom.name,
+    build: rom.build,
+    logic: rom.logic,
+    weapons: rom.weapons,
+    rom_mode: rom.rom_mode,
+    variation: rom.variation,
+    difficulty: rom.difficulty,
+    tournament: rom.tournament,
+    hash: rom.hash,
+    size: rom.size,
+    generated: rom.generated,
+  });
+
+  if (spoiler) {
+    console.log({
+      spoiler: rom.spoiler,
+    });
+  }
+
+  console.log('Built!')
 });

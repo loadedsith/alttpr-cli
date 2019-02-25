@@ -18,7 +18,7 @@ nock.disableNetConnect();
 describe('rom', () => {
   beforeAll(() => {
     let removeTestFiles = [
-      './spec/index/workspace/n_Daily Challenge: Feb 13, 2019.sfc',
+      './spec/index/workspace/Daily Challenge: Feb 13, 2019.sfc',
     ];
     removeTestFiles.forEach((file) => {
       if (fs.existsSync(file)) {
@@ -31,7 +31,7 @@ describe('rom', () => {
   });
 
   it('should build a rom', (done) => {
-    expect(fs.existsSync('./spec/index/workspace/n_Daily Challenge: Feb 13, 2019.sfc')).toBe(false);
+    expect(fs.existsSync('./spec/index/workspace/Daily Challenge: Feb 13, 2019.sfc')).toBe(false);
 
     randomizerCLI.buildRom('./Zelda no Densetsu - Kamigami no' +
         ' Triforce (Japan).sfc',
@@ -44,7 +44,7 @@ describe('rom', () => {
       './spec/daily.json',
       './spec/index/workspace/'
     ).then(() => {
-      expect(fs.existsSync('./spec/index/workspace/n_Daily Challenge: Feb 13, 2019.sfc')).toBe(true);
+      expect(fs.existsSync('./spec/index/workspace/Daily Challenge: Feb 13, 2019.sfc')).toBe(true);
       done();
     });
   });
