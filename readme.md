@@ -9,6 +9,14 @@
 
 - An internet connection. This program was designed with an internet connection in mind. If you have a reason to run it without, let me know what that is, and maybe we can help you out.
 
+## What does it do?
+
+This is a node based version of https://alttpr.com/en/daily. The biggest difference is that this removes the browser dependency. It still functions in the same way, as far as patching goes; uses local rom, patch comes from the same source as it does the site, and the patch is applied locally (no sending roms in either direction).
+
+The website has a bunch of configuration as well (heart color, quickswap, pick a sprite) all of which has been reproduced in the run.js script.
+
+To know which daily it should pull down, it reads the /daily page, and scrapes out the current rom hash, the base patch, and the daily hash. From there I can request the daily patch. This patch is then applied to the local rom.
+
 ## Install
 
     git clone https://github.com/loadedsith/alttpr-cli.git
