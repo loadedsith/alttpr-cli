@@ -11,14 +11,12 @@ const fs = require('fs');
 const nock = require('nock');
 
 const scope = nock('http://s3.us-east-2.amazonaws.com')
-  // .filteringRequestBody(/.*/, '*')
   .get(/(.*)/)
   .reply(200, (uri, requestBody, cb) => {
     const spriteName =
         path.basename(url.parse(uri).pathname);
-    console.log({spriteName});
     fs.readFile(`./spec/sprites/www/${spriteName}`, cb); // Error-first callback
-  })
+  });
 
 nock.disableNetConnect();
 
@@ -71,9 +69,9 @@ describe('Sprites', () => {
   });
 
 
-  it('should download a sprite', () => {
-    downloadSprite(spriteNames[0], 'spec/sprites/workspace'//,
-        // getMockHTTP('spriteNameDataResponse')
-    )
+  it('should download a sprite', (done) => {
+    downloadSprite(spriteNames[0], 'spec/sprites/workspace').then(() => {
+      done();
+    });
   });
-})
+});

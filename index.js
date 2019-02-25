@@ -1,4 +1,5 @@
 const ROM = require('./rom.js');
+const {getSprite} = require('./sprites.js');
 const fs = require('fs');
 const vt_base_patch = require('./vt_base_patch.json');
 const daily = require('./daily.json');
@@ -27,28 +28,38 @@ const buildRom = (file,
     menuSpeed='normal',
     heartColor='red',
     heartSpeed='half',
-    spriteName='./sprites/001.link.1.zspr') => {
-  return new ROM(fs.readFileSync(file), (rom) => {
-    patchRomFromJSON(rom).then((rom) => {
-      if (rom.checkMD5() != current_rom_hash) {
-        console.log('error', 'error.bad_file');
-        return;
-      }
+    spriteName='Link') => {
+  let readyRom = new Promise((resolve, reject) => {
+    new ROM(fs.readFileSync(file), (rom) => {
+        patchRomFromJSON(rom).then((rom) => {
+          if (rom.checkMD5() != current_rom_hash) {
+            console.log('error', 'error.bad_file');
+            reject();
+            return;
+          }
 
-      rom.parsePatch(daily).then((rom) => {
-        rom.setQuickswap(quickswap);
-        rom.setMusicVolume(musicVolume);
-        rom.setMenuSpeed(menuSpeed);
-        rom.setHeartColor(heartColor);
-        rom.setHeartSpeed(heartSpeed);
-        let sprite = fs.readFileSync(`./${spriteName}`);
-        rom.parseSprGfx(sprite);
-        rom.save('n_' + rom.downloadFilename() + '.sfc');
-      })
-    }).catch((e) => {
-      console.log('error', e)
+          rom.parsePatch(daily).then(() => {
+            resolve(rom);
+          });
+
+        }).catch(reject);
     });
   })
+
+  return Promise.all([
+    getSprite(spriteName),
+    readyRom,
+  ]).then(([sprite, rom]) => {
+    rom.setQuickswap(quickswap);
+    rom.setMusicVolume(musicVolume);
+    rom.setMenuSpeed(menuSpeed);
+    rom.setHeartColor(heartColor);
+    rom.setHeartSpeed(heartSpeed);
+    rom.parseSprGfx(sprite);
+    rom.save('n_' + rom.downloadFilename() + '.sfc');
+  }).catch((e) => {
+    console.log('error', e)
+  });
 
 }
 
