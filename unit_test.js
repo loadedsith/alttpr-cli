@@ -16,7 +16,7 @@ const scope = nock('https://s3.us-east-2.amazonaws.com')
 
 nock.disableNetConnect();
 describe('rom', () => {
-  beforeEach(() => {
+  beforeAll(() => {
     let removeTestFiles = [
       './spec/index/workspace/n_Daily Challenge: Feb 13, 2019.sfc',
     ];

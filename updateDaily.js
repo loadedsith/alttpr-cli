@@ -54,6 +54,52 @@ const getCurrentRomHash = (path='./current_rom_hash.json', write=true) => {
   })
 };
 
+const getCurrentDailyPatch = (path='./daily.json', write=true) => {
+  return new Promise((resolve, reject) => {
+    getCurrentDailyHash('', false).then((hash) => {
+      https.get('https://s3.us-east-2.amazonaws.com/' +
+          `alttpr-patches/${hash}.json`, (response) => {
+        let body = '';
+
+        if (response.statusCode == 200 && response.statusCode < 299) {
+          response.on('data', function(chunk) {
+            body += chunk;
+          });
+
+          response.on('end', function() {
+            if (write) {
+              fs.writeFileSync(path, body);
+            }
+            resolve(body);
+          });
+
+        } else {
+          reject(`Failed to download daily. ${JSON.stringify(response)}`);
+        }
+      });
+    });
+  });
+};
+
+const getCurrentDailyHash = (path='./dailyHash.json', write=true) => {
+  return new Promise((resolve, reject) => {
+    getDaily().then((body) => {
+      body = body.split('\n');
+      body = body.find((line) => {
+        return line.indexOf('hash="')> -1
+      })
+
+      const hash = body.match(/\shash="([^"]*)">/)[1]
+
+      if (write) {
+        fs.writeFileSync(path, `"${hash}"`);
+      }
+
+      resolve(hash)
+    }).catch(reject);
+  })
+};
+
 const getCurrentBasePatch = (path='./base_patch.json', write=true) => {
   return new Promise((resolve, reject) => {
     getDaily().then((body) => {
@@ -75,6 +121,7 @@ const getCurrentBasePatch = (path='./base_patch.json', write=true) => {
 
 module.exports = {
   getCurrentRomHash,
+  getCurrentDailyHash,
   getCurrentBasePatch,
   getDaily,
 };

@@ -1,4 +1,5 @@
 const randomizerCLI = require('./index.js')
+const {getCurrentRomHash, getCurrentBasePatch} = require('./updateDaily.js');
 
 const {
   rom,
@@ -11,6 +12,18 @@ const {
   spriteName,
 } = require('yargs')
     .usage('Usage: $0 <command> [options]')
+
+    .command({
+      command: 'update',
+      aliases: ['u'],
+      desc: 'Update daily rom',
+      handler: (argv) => {
+        getCurrentRomHash();
+        getCurrentBasePatch();
+        getCurrentDailyPatch();
+      }
+    })
+
     .example('$0 -r "./Zelda no Densetsu - Kamigami no Triforce (Japan).sfc" -p "./daily.json"', 'Build a rom.')
 
     .alias('r', 'rom')

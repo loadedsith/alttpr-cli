@@ -1,6 +1,7 @@
 const cp = require('child_process');
 const fs = require('fs');
-const {getCurrentRomHash, getCurrentBasePatch, getDaily} = require('./updateDaily.js');
+const {getCurrentDailyHash, getCurrentRomHash, getCurrentBasePatch, getDaily} =
+    require('./updateDaily.js');
 
 const nock = require('nock');
 
@@ -13,7 +14,7 @@ const scope = nock('https://alttpr.com')
 nock.disableNetConnect();
 
 describe('Daily update', () => {
-  beforeEach(() => {
+  beforeAll(() => {
     let removeTestFiles = [
       './spec/daily/workspace/current_rom_hash.json',
       './spec/daily/workspace/base_patch.json',
@@ -22,6 +23,17 @@ describe('Daily update', () => {
       if (fs.existsSync(file)) {
         fs.unlink(file);
       }
+    })
+  });
+
+  it('should get the current daily hash', (done) => {
+    getCurrentDailyHash('./spec/daily/workspace/daily_hash.json')
+        .then((hash) => {
+      expect(hash).toBe('YxMXjK2kyz');
+      expect(fs.existsSync('./spec/daily/workspace/daily_hash.json'))
+          .toBe(true);
+
+      done();
     })
   });
 

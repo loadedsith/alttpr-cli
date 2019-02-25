@@ -21,8 +21,15 @@ nock.disableNetConnect();
 
 
 describe('Sprites', () => {
-  beforeEach(() => {
-
+  beforeAll(() => {
+    let removeTestFiles = [
+      './spec/sprites/workspace/001.link.1.zspr'
+    ];
+    removeTestFiles.forEach((file) => {
+      if (fs.existsSync(file)) {
+        fs.unlinkSync(file);
+      }
+    })
   });
 
   it('should list sprite names', () => {
@@ -69,8 +76,6 @@ describe('Sprites', () => {
   });
 
   it('should download a sprite', (done) => {
-    fs.unlink('./spec/sprites/workspace/001.link.1.zspr');
-
     downloadSprite(spriteNames[0], 'spec/sprites/workspace').then(() => {
       expect(fs.existsSync('./spec/sprites/workspace/001.link.1.zspr'))
           .toBe(true);
