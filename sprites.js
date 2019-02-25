@@ -18,9 +18,17 @@ const spriteNames = spritesJSON.reduce((acc, sprite) => {
 }, []);
 
 const getSpriteUrl = (spriteName) => {
-  return spritesJSON.find((sprite) => {
-    return sprite.name === spriteName;
-  }).file;
+  try {
+    return spritesJSON.find((sprite) => {
+      return sprite.name === spriteName;
+    }).file;
+  } catch (e) {
+    if (e.message.indexOf('read property \'file\' of undefined') > -1) {
+      throw new Error('No sprite found in the sprite.json. Did you try' +
+          ' `npm run update-sprites`?');
+    }
+    throw e
+  }
 };
 
 const getSpriteFileName = (spriteName) => {
@@ -29,24 +37,31 @@ const getSpriteFileName = (spriteName) => {
 
 const downloadSprite = (spriteName, outDir = 'sprites', http_ = http) => {
   return new Promise((resolve, reject) => {
-    const filename = getSpriteFileName(spriteName);
     const spriteUrl = getSpriteUrl(spriteName);
-    const file = fs.createWriteStream(`./${outDir}/${filename}`);
 
     http_.get(spriteUrl, (response) => {
-      let stream = response.pipe(file);
-      stream.on('finish', function () {
-        file.close()
-        resolve();
-       });
+      console.log({[spriteName]:response.statusCode});
+      if (response.statusCode == 200 && response.statusCode < 299) {
+        const filename = getSpriteFileName(spriteName);
+        const file = fs.createWriteStream(`./${outDir}/${filename}`);
+        let stream = response.pipe(file);
 
-    }, reject);
+        stream.on('finish', function() {
+          file.close();
+          resolve();
+        });
+      } else {
+        reject(`Failed to download ${spriteName}: ${spriteUrl}. ${JSON.stringify(response)}`);
+      }
+
+    });
   });
 };
 
 const getSprite = (spriteName) => {
   return new Promise((resolve, reject) => {
     const filename = getSpriteFileName(spriteName);
+
     try {
       let sprite = fs.readFileSync(`./sprites/${filename}`);
       resolve(sprite);
@@ -56,6 +71,7 @@ const getSprite = (spriteName) => {
         resolve(sprite);
       }).catch((e) => {
         console.log('getSprite Download failed. ', e);
+        reject(e)
         throw e
       });
     }

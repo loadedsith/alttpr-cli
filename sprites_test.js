@@ -23,6 +23,7 @@ nock.disableNetConnect();
 
 describe('Sprites', () => {
   beforeEach(() => {
+
   });
 
   it('should list sprite names', () => {
@@ -68,10 +69,35 @@ describe('Sprites', () => {
     expect(getSpriteFileName('Link')).toEqual('001.link.1.zspr');
   });
 
-
   it('should download a sprite', (done) => {
     downloadSprite(spriteNames[0], 'spec/sprites/workspace').then(() => {
       done();
     });
   });
+
+  it('should fail to download a sprite; missing sprite', (done) => {
+      downloadSprite('notARealSprite', 'spec/sprites/workspace').then(() => {
+        expect('This code should be unreachable').toEqual(false);
+        done()
+      }).catch((e) => {
+        expect(e.message).toEqual('No sprite found in the sprite.json. Did you try' +
+          ' `npm run update-sprites`?');
+        done()
+      });
+  });
+
+  it('should fail to download a sprite; real sprite, missing download', (done) => {
+      downloadSprite('Bewp', 'spec/sprites/workspace').then(() => {
+        expect('This code should be unreachable').toEqual(false);
+        done()
+      }).catch((e) => {
+          expect(e.slice(0,79)).toEqual('Failed to download Bewp:' +
+            ' https://s3.us-east-2.amazonaws.com/alttpr/bewp.1.zspr.'
+          );
+          expect(fs.existsSync('./spec/sprites/workspace/Bewp.1.zspr'))
+              .toBe(false);
+          done();
+        });
+      });
 });
+
