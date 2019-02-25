@@ -38,10 +38,11 @@ var ROM = (function(arrayBuffer, loaded_callback, error_callback) {
       });
       var checksum = (sum + 0x1FE) & 0xFFFF;
       var inverse = checksum ^ 0xFFFF;
-      this.write(0x7FDC, [inverse & 0xFF, inverse >> 8, checksum & 0xFF, checksum >> 8]);
+      this.write(0x7FDC,
+          [inverse & 0xFF, inverse >> 8, checksum & 0xFF, checksum >> 8]);
       resolve(this);
     });
-  }
+  };
 
   this.save = (filename) => {
     this.updateChecksum().then(() => {
@@ -288,7 +289,7 @@ var ROM = (function(arrayBuffer, loaded_callback, error_callback) {
       this.parsePatch({patch: this.base_patch}).then((rom) => {
         resolve(rom);
       }).catch((error) => {
-        console.log(error, ":(");
+        console.log(error, ':(');
         reject('sadness');
       });
     });
