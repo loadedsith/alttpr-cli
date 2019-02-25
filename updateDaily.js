@@ -1,3 +1,4 @@
+const zlib = require('zlib');
 const https = require('https');
 const fs = require('fs');
 
@@ -57,22 +58,26 @@ const getCurrentRomHash = (path='./current_rom_hash.json', write=true) => {
 const getCurrentDailyPatch = (path='./daily.json', write=true) => {
   return new Promise((resolve, reject) => {
     getCurrentDailyHash('', false).then((hash) => {
+      let buffer = [];
+
       https.get('https://s3.us-east-2.amazonaws.com/' +
           `alttpr-patches/${hash}.json`, (response) => {
-        let body = '';
-
         if (response.statusCode == 200 && response.statusCode < 299) {
-          response.on('data', function(chunk) {
-            body += chunk;
-          });
+          let gunzip = zlib.createGunzip();
+          response.pipe(gunzip);
 
-          response.on('end', function() {
-            if (write) {
-              fs.writeFileSync(path, body);
-            }
+          gunzip.on('data', function(data) {
+            // decompression chunk ready, add it to the buffer
+            buffer.push(data.toString())
+
+          }).on("end", function() {
+            // response and decompression complete, join the buffer and return
+            let body = buffer.join("");
+            fs.writeFileSync(path, body);
             resolve(body);
-          });
-
+          }).on("error", function(e) {
+            reject(e);
+          })
         } else {
           reject(`Failed to download daily. ${JSON.stringify(response)}`);
         }
@@ -121,6 +126,7 @@ const getCurrentBasePatch = (path='./base_patch.json', write=true) => {
 
 module.exports = {
   getCurrentRomHash,
+  getCurrentDailyPatch,
   getCurrentDailyHash,
   getCurrentBasePatch,
   getDaily,

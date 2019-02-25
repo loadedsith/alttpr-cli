@@ -1,5 +1,6 @@
 const randomizerCLI = require('./index.js')
-const {getCurrentRomHash, getCurrentBasePatch} = require('./updateDaily.js');
+const {getCurrentRomHash, getCurrentBasePatch, getCurrentDailyPatch} =
+    require('./updateDaily.js');
 
 const {
   rom,
@@ -18,9 +19,14 @@ const {
       aliases: ['u'],
       desc: 'Update daily rom',
       handler: (argv) => {
-        getCurrentRomHash();
-        getCurrentBasePatch();
-        getCurrentDailyPatch();
+        Promise.all([
+          getCurrentRomHash(),
+          getCurrentBasePatch(),
+          getCurrentDailyPatch(),
+        ]).then(() => {
+          console.log('Updated complete');
+          process.exit();
+        })
       }
     })
 

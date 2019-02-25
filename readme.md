@@ -1,7 +1,6 @@
 # Randomizer - CLI
 ### For alttpr
 
-
 ## Requirements
 
 Somewhere on your system you must have a file that contains the following game:
