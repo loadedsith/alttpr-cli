@@ -16,13 +16,37 @@ const scope = nock('https://s3.us-east-2.amazonaws.com')
 
 nock.disableNetConnect();
 describe('rom', () => {
+  beforeEach(() => {
+    let removeTestFiles = [
+      './spec/index/workspace/n_Daily Challenge: Feb 13, 2019.sfc',
+    ];
+    removeTestFiles.forEach((file) => {
+      if (fs.existsSync(file)) {
+        fs.unlink(file);
+      }
+    })
+  });
   it('should load', () => {
     expect(randomizerCLI.ROM).not.toBeUndefined();
   });
 
   it('should build a rom', (done) => {
+    expect(fs.existsSync('./spec/index/workspace/n_Daily Challenge: Feb 13, 2019.sfc')).toBe(false);
+
     randomizerCLI.buildRom('./Zelda no Densetsu - Kamigami no' +
-        ' Triforce (Japan).sfc').then(done);
+        ' Triforce (Japan).sfc',
+      false,
+      false,
+      'normal',
+      'red',
+      'normal',
+      'Link',
+      './spec/daily.json',
+      './spec/index/workspace/'
+    ).then(() => {
+      expect(fs.existsSync('./spec/index/workspace/n_Daily Challenge: Feb 13, 2019.sfc')).toBe(true);
+      done();
+    });
   });
 });
 

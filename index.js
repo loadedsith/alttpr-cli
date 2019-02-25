@@ -28,7 +28,8 @@ const buildRom = (file,
     heartColor='red',
     heartSpeed='normal',
     spriteName='Link',
-    patch='./daily.json') => {
+    patch='./daily.json',
+    savePath='./') => {
   let readyRom = new Promise((resolve, reject) => {
     new ROM(fs.readFileSync(file), (rom) => {
         patchRomFromJSON(rom).then((rom) => {
@@ -60,7 +61,7 @@ const buildRom = (file,
       rom.setHeartSpeed(heartSpeed);
     }
     rom.parseSprGfx(sprite);
-    rom.save('n_' + rom.downloadFilename() + '.sfc');
+    rom.save(`${savePath}n_${rom.downloadFilename()}.sfc`);
   }).catch((e) => {
     console.log('error', e)
   });

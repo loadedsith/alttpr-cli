@@ -46,7 +46,7 @@ var ROM = (function(arrayBuffer, loaded_callback, error_callback) {
 
   this.save = (filename) => {
     this.updateChecksum().then(() => {
-      fs.writeFile(filename, Buffer.from(new Uint8Array(u_array)));
+      fs.writeFileSync(filename, Buffer.from(new Uint8Array(u_array)));
     });
   };
 
