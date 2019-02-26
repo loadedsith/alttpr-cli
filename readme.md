@@ -39,11 +39,11 @@ For more settings:
 
 ## With Git
 
+Clone the repo;
+
     git clone https://github.com/loadedsith/alttpr-cli.git
 
-In node see `unit_test.js`.
-
-From with bash:
+Bash:
 
     cd [randomizer-repo]
     node run.js --help
@@ -72,10 +72,12 @@ From with bash:
     Examples:
       run.js -r "./Zelda no Densetsu - Kamigami no Triforce (Japan).sfc" -p "./daily.json"   [Build a rom]
 
+For Node support, see `unit_test.js`.
+
+
 ## Road map
 
 Wrappers! (I'm gonna start with EmulationStation on the Raspberry Pi).
-
 
 ## Sprites
 
