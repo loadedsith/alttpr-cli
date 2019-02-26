@@ -5,9 +5,9 @@ const path = require('path');
 let spritesJSON;
 
 try {
-  spritesJSON = require('./sprites/sprites.json');
+  spritesJSON = require(process.cwd() + '/sprites/sprites.json');
 } catch (e) {
-  console.log('Sprites.json could not be found, try running "npm run' +
+  console.log('Sprites.json could not be found, try running "npm run ' +
    'update-sprites"');
   throw e;
 }
