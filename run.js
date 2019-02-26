@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const randomizerCLI = require('./index.js')
 const {getCurrentRomHash, getCurrentBasePatch, getCurrentDailyPatch} =
     require('./updateDaily.js');
