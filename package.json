@@ -10,7 +10,7 @@
     "watch-test": "nodemon --ignore bundle.js --ext js,jade --exec 'npm run test'",
     "watch": "nodemon --ignore bundle.js --ext js,jade --exec 'npm run build'",
     "download-sprites": "node downloadSprites.js",
-    "postinstall": "updateSprites.sh"
+    "postinstall": "./updateSprites.sh"
   },
   "author": "",
   "license": "ISC",
