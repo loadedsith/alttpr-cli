@@ -39,7 +39,7 @@ const buildRom = (file,
             return;
           }
 
-          rom.parsePatch(require(patch)).then(() => {
+          rom.parsePatch(require(process.cwd() + patch)).then(() => {
             resolve(rom);
           });
 
