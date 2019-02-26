@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "run.js",
-  "bin" : { "alttpr-cli" : "node ./run.js" },
+  "bin" : { "alttpr-cli" : "./run.js" },
   "scripts": {
     "start": "node run.js",
     "test": "jasmine",
