@@ -4,6 +4,7 @@
   "description": "",
   "main": "run.js",
   "scripts": {
+    "alttpr-cli": "node run.js",
     "test": "jasmine",
     "test-inspect": "node --inspect-brk  ./node_modules/jasmine/bin/jasmine.js",
     "watch-test-inspect": "nodemon --ignore bundle.js --ext js,jade --exec 'npm run test-inspect'",
