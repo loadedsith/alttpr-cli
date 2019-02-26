@@ -3,7 +3,7 @@
 
 ## Requirements
 
-- Zelda no Densetsu - Kamigami no Triforce (Japan).sfc with checksum 3322EFFC
+- _Zelda no Densetsu - Kamigami no Triforce (Japan).sfc_ with checksum **3322EFFC**
 
 ![Google 3322EFFC to ensure you've got the right rom](http://alttp.mymm1.com/game/findrom.png)
 
