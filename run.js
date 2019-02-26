@@ -2,17 +2,7 @@ const randomizerCLI = require('./index.js')
 const {getCurrentRomHash, getCurrentBasePatch, getCurrentDailyPatch} =
     require('./updateDaily.js');
 
-const {
-  rom,
-  patch,
-  quickswap,
-  musicVolume,
-  menuSpeed,
-  heartColor,
-  heartSpeed,
-  spriteName,
-  spoiler,
-} = require('yargs')
+require('yargs')
     .usage('Usage: $0 <command> [options]')
 
     .command({
@@ -80,51 +70,71 @@ const {
     .default('v', false)
     .describe('v', 'Music volume. Disable for MSU-1 support.')
 
+    .command({
+      command: 'build',
+      aliases: ['b'],
+      desc: 'Update daily rom',
+      handler: (argv) => {
+        console.log('Building rom with these customizations: ');
+        let {
+          rom,
+          patch,
+          quickswap,
+          musicVolume,
+          menuSpeed,
+          heartColor,
+          heartSpeed,
+          spriteName,
+          spoiler,
+        } = argv
+        console.log({
+          quickswap,
+          musicVolume,
+          menuSpeed,
+          heartColor,
+          heartSpeed,
+          spriteName,
+        });
+        randomizerCLI.buildRom(rom,
+          quickswap,
+          musicVolume,
+          menuSpeed,
+          heartColor,
+          heartSpeed,
+          spriteName,
+        ).then((rom) => {
+          console.log('Building rom with these patch settings: ');
+
+          console.log({
+            logic: rom.logic,
+            difficulty: rom.difficulty,
+            mode: rom.mode,
+            name: rom.name,
+            build: rom.build,
+            logic: rom.logic,
+            weapons: rom.weapons,
+            rom_mode: rom.rom_mode,
+            variation: rom.variation,
+            difficulty: rom.difficulty,
+            tournament: rom.tournament,
+            hash: rom.hash,
+            size: rom.size,
+            generated: rom.generated,
+          });
+
+          if (spoiler) {
+            console.log({
+              spoiler: rom.spoiler,
+            });
+          }
+
+          console.log('Built!')
+        });
+      }
+    })
+
+
     .help('?')
     .alias('?', 'help')
     .argv
 
-console.log('Building rom with these customizations: ');
-console.log({
-  quickswap,
-  musicVolume,
-  menuSpeed,
-  heartColor,
-  heartSpeed,
-  spriteName,
-});
-randomizerCLI.buildRom(rom,
-  quickswap,
-  musicVolume,
-  menuSpeed,
-  heartColor,
-  heartSpeed,
-  spriteName,
-).then((rom) => {
-  console.log('Building rom with these patch settings: ');
-
-  console.log({
-    logic: rom.logic,
-    difficulty: rom.difficulty,
-    mode: rom.mode,
-    name: rom.name,
-    build: rom.build,
-    logic: rom.logic,
-    weapons: rom.weapons,
-    rom_mode: rom.rom_mode,
-    variation: rom.variation,
-    difficulty: rom.difficulty,
-    tournament: rom.tournament,
-    hash: rom.hash,
-    size: rom.size,
-    generated: rom.generated,
-  });
-
-  if (spoiler) {
-    console.log({
-      spoiler: rom.spoiler,
-    });
-  }
-
-  console.log('Built!')
-});
