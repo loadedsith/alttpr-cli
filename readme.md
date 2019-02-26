@@ -70,9 +70,7 @@ From with bash:
       -?, --help         Show help                                         [boolean]
 
     Examples:
-      run.js -r "./Zelda no Densetsu -          Build a rom.
-      Kamigami no Triforce (Japan).sfc" -p
-      "./daily.json"
+      run.js -r "./Zelda no Densetsu - Kamigami no Triforce (Japan).sfc" -p "./daily.json"   [Build a rom]
 
 ## Road map
 
