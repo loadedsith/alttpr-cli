@@ -23,6 +23,14 @@ To know which daily it should pull down, it reads the /daily page, and scrapes o
 
 ## Use
 
+With npx:
+
+    npx https://github.com/loadedsith/alttpr-cli.git [params]
+
+In node see `unit_test.js`.
+
+From with bash:
+
     cd [randomizer-repo]
     node run.js --help
 
