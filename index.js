@@ -1,5 +1,6 @@
 const ROM = require('./rom.js');
 const {getSprite} = require('./sprites.js');
+const path = require('path');
 const fs = require('fs');
 const vt_base_patch = require('./vt_base_patch.json');
 const current_rom_hash = require('./current_rom_hash.json');
@@ -39,7 +40,7 @@ const buildRom = (file,
             return;
           }
 
-          rom.parsePatch(require(process.cwd() + patch)).then(() => {
+          rom.parsePatch(require(path.join(process.cwd(), patch))).then(() => {
             resolve(rom);
           });
 
