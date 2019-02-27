@@ -48,11 +48,7 @@ Then use
     alttpr-cli update
     alttpr-cli build [params]
 
-global installs will have `alttpr-cli` everywhere, where local installs will have it only under the installed directory.
-
-For more settings:
-
-    alttpr-cli --help
+global installs will have `alttpr-cli` everywhere, where local installs will have it only in the installed directory.
 
 ## With Git
 
@@ -63,7 +59,13 @@ Clone the repo;
 Bash:
 
     cd alttpr-cli
-    node run.js --help
+    node run.js update
+    node run.js build [params]
+
+## Parameters
+
+The following output is from the `npm run` version of the command, but the flags are the same for each method.
+
     Usage: run <command> [options]
 
     Commands:
