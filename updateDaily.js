@@ -55,33 +55,42 @@ const getCurrentRomHash = (path='./current_rom_hash.json', write=true) => {
   })
 };
 
+const getPatch = (hash, saveAs, write=true) => {
+  if (!saveAs) {
+    saveAs = hash;
+  }
+  return new Promise((resolve, reject) => {
+    let buffer = [];
+
+    https.get('https://s3.us-east-2.amazonaws.com/' +
+        `alttpr-patches/${hash}.json`, (response) => {
+      if (response.statusCode == 200 && response.statusCode < 299) {
+        let gunzip = zlib.createGunzip();
+        response.pipe(gunzip);
+
+        gunzip.on('data', function(data) {
+          // decompression chunk ready, add it to the buffer
+          buffer.push(data.toString());
+
+        }).on('end', function() {
+          // response and decompression complete, join the buffer and return
+          let body = buffer.join('');
+          fs.writeFileSync(`${saveAs}.json`, body);
+          resolve(body);
+        }).on('error', function(e) {
+          reject(e);
+        })
+      } else {
+        reject(`Failed to download patch. ${JSON.stringify(response)}`);
+      }
+    });
+  });
+};
+
 const getCurrentDailyPatch = (path='./daily.json', write=true) => {
   return new Promise((resolve, reject) => {
     getCurrentDailyHash('', false).then((hash) => {
-      let buffer = [];
-
-      https.get('https://s3.us-east-2.amazonaws.com/' +
-          `alttpr-patches/${hash}.json`, (response) => {
-        if (response.statusCode == 200 && response.statusCode < 299) {
-          let gunzip = zlib.createGunzip();
-          response.pipe(gunzip);
-
-          gunzip.on('data', function(data) {
-            // decompression chunk ready, add it to the buffer
-            buffer.push(data.toString())
-
-          }).on("end", function() {
-            // response and decompression complete, join the buffer and return
-            let body = buffer.join("");
-            fs.writeFileSync(path, body);
-            resolve(body);
-          }).on("error", function(e) {
-            reject(e);
-          })
-        } else {
-          reject(`Failed to download daily. ${JSON.stringify(response)}`);
-        }
-      });
+      getAPatch(hash, 'daily');
     });
   });
 };
@@ -130,4 +139,5 @@ module.exports = {
   getCurrentDailyHash,
   getCurrentBasePatch,
   getDaily,
+  getPatch,
 };
