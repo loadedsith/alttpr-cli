@@ -112,26 +112,27 @@ Hash based roms:
 
 - Get a Daily and build it.
 
-    npx alttpr-cli update
-    npx alttpr-cli build
+
+        npx alttpr-cli update
+        npx alttpr-cli build
 
 - Get a specific patch and build it
 
-    npx alttpr-cli get qZGLj5lXvk
-    npx alttpr-cli build -p ./qZGLj5lXvk.json
+        npx alttpr-cli get qZGLj5lXvk
+        npx alttpr-cli build -p ./qZGLj5lXvk.json
 
 
 - Build the current daily with Zero Suit Samus
 
-    npx alttpr-cli build -t "Zero Suit Samus"
+        npx alttpr-cli build -t "Zero Suit Samus"
 
 - Build the current daily with a random sprite
 
-    npx alttpr-cli build -t random
+        npx alttpr-cli build -t random
 
 - Build the current daily with a random sprite and quickswap
 
-    npx alttpr-cli build -t random -q
+        npx alttpr-cli build -t random -q
 
 
 
