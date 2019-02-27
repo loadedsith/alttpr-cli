@@ -90,7 +90,7 @@ const getPatch = (hash, saveAs, write=true) => {
 const getCurrentDailyPatch = (path='./daily.json', write=true) => {
   return new Promise((resolve, reject) => {
     getCurrentDailyHash('', false).then((hash) => {
-      getAPatch(hash, 'daily');
+      getPatch(hash, 'daily');
     });
   });
 };
