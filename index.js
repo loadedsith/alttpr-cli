@@ -7,9 +7,13 @@ const current_rom_hash = require('./current_rom_hash.json');
 const s3_prefix = "https://s3.us-east-2.amazonaws.com/alttpr-patches";
 const https = require('https');
 
-const checkForUpdates = () => {
+const checkForUpdates = (parentVersion) => {
   return new Promise((resolve, reject) => {
     const {repository} = require('./package.json');
+    if (!parentVersion) {
+      parentVersion = fs.readFileSync('./.parent-version', 'utf8');
+    }
+
     const hashPath = repository.replace('github:',
         'https://api.github.com/repos/') + '/branches/master'
     https.get(hashPath, (response) => {
@@ -21,15 +25,17 @@ const checkForUpdates = () => {
         });
         response.on('end', function() {
           body = JSON.parse(body);
-          console.log({body,version: process.versions});
 
-          const hash = body.commit.sha;
+          const hash = body.commit.parents[0].sha;
+          console.log({hash});
           resolve({
+            behind: hash != parentVersion,
+            parentVersion,
             hash,
             response,
             repository,
             hashPath,
-          })
+          });
 
         });
 

@@ -20,6 +20,7 @@ const scopeGithub = nock('https://api.github.com')
     fs.readFile(`./spec/github-api/www/master.json`, cb);
   });
 
+const parentVersion = '033010ffa898555e2c3724c768e687066f259b39';
 
 nock.disableNetConnect();
 describe('autoUpdate', () => {
@@ -28,13 +29,18 @@ describe('autoUpdate', () => {
   });
 
   it('should get current package', (done) => {
-    expect(randomizerCLI.checkForUpdates().then((results) => {
+    expect(randomizerCLI.checkForUpdates(parentVersion).then((results) => {
       expect(results.repository).toEqual('github:loadedsith/alttpr-cli');
       expect(results.hashPath)
         .toEqual('https://api.github.com/repos/loadedsith/alttpr' +
             '-cli/branches/master');
+      // Hash comes from the server, it is also the parent sha of th last commit
       expect(results.hash)
-        .toEqual('c00beb6313845885ee66d5f46c6a2dea80a6fba2');
+        .toEqual('033010ffa898555e2c3724c768e687066f259b39');
+      expect(results.parentVersion)
+        .toEqual(parentVersion);
+      expect(results.behind)
+        .toEqual(false);
       done();
     }))
   });
