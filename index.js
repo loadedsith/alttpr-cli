@@ -27,7 +27,6 @@ const checkForUpdates = (parentVersion) => {
           body = JSON.parse(body);
 
           const hash = body.commit.parents[0].sha;
-          console.log({hash});
           resolve({
             behind: hash != parentVersion,
             parentVersion,
