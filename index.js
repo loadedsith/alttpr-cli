@@ -36,11 +36,11 @@ const checkForUpdates = (parentVersion) => {
             repository,
             hashPath,
           });
-
         });
 
       } else {
-        dailyReject(`Failed to download daily. ${JSON.stringify(response)}`);
+        reject(`Failed to check for latest version.
+            ${JSON.stringify(response)}`);
       }
     });
   });
