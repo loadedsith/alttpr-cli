@@ -1,0 +1,59 @@
+{
+  "name": "master",
+  "commit": {
+    "sha": "c00beb6313845885ee66d5f46c6a2dea80a6fba2",
+    "node_id": "MDY6Q29tbWl0MTcwNzMyNTk4OmMwMGJlYjYzMTM4NDU4ODVlZTY2ZDVmNDZjNmEyZGVhODBhNmZiYTI=",
+    "commit": {
+      "author": {
+        "name": "Graham Heath",
+        "email": "heathg@google.com",
+        "date": "2019-02-27T05:09:57Z"
+      },
+      "committer": {
+        "name": "Graham Heath",
+        "email": "heathg@google.com",
+        "date": "2019-02-27T05:09:57Z"
+      },
+      "message": "oops",
+      "tree": {
+        "sha": "4a05c7e5f44110f503b5d16709c71b6169a64a3e",
+        "url": "https://api.github.com/repos/loadedsith/alttpr-cli/git/trees/4a05c7e5f44110f503b5d16709c71b6169a64a3e"
+      },
+      "url": "https://api.github.com/repos/loadedsith/alttpr-cli/git/commits/c00beb6313845885ee66d5f46c6a2dea80a6fba2",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null
+      }
+    },
+    "url": "https://api.github.com/repos/loadedsith/alttpr-cli/commits/c00beb6313845885ee66d5f46c6a2dea80a6fba2",
+    "html_url": "https://github.com/loadedsith/alttpr-cli/commit/c00beb6313845885ee66d5f46c6a2dea80a6fba2",
+    "comments_url": "https://api.github.com/repos/loadedsith/alttpr-cli/commits/c00beb6313845885ee66d5f46c6a2dea80a6fba2/comments",
+    "author": null,
+    "committer": null,
+    "parents": [
+      {
+        "sha": "033010ffa898555e2c3724c768e687066f259b39",
+        "url": "https://api.github.com/repos/loadedsith/alttpr-cli/commits/033010ffa898555e2c3724c768e687066f259b39",
+        "html_url": "https://github.com/loadedsith/alttpr-cli/commit/033010ffa898555e2c3724c768e687066f259b39"
+      }
+    ]
+  },
+  "_links": {
+    "self": "https://api.github.com/repos/loadedsith/alttpr-cli/branches/master",
+    "html": "https://github.com/loadedsith/alttpr-cli/tree/master"
+  },
+  "protected": false,
+  "protection": {
+    "enabled": false,
+    "required_status_checks": {
+      "enforcement_level": "off",
+      "contexts": [
+
+      ]
+    }
+  },
+  "protection_url": "https://api.github.com/repos/loadedsith/alttpr-cli/branches/master/protection"
+}

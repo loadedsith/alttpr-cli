@@ -4,8 +4,46 @@ const path = require('path');
 const fs = require('fs');
 const vt_base_patch = require('./vt_base_patch.json');
 const current_rom_hash = require('./current_rom_hash.json');
-
 const s3_prefix = "https://s3.us-east-2.amazonaws.com/alttpr-patches";
+const https = require('https');
+
+const checkForUpdates = (parentVersion) => {
+  return new Promise((resolve, reject) => {
+    const {repository} = require('./package.json');
+    if (!parentVersion) {
+      parentVersion = fs.readFileSync('./.parent-version', 'utf8');
+    }
+
+    const hashPath = repository.replace('github:',
+        'https://api.github.com/repos/') + '/branches/master'
+    https.get(hashPath, (response) => {
+      let body = '';
+
+      if (response.statusCode == 200 && response.statusCode < 299) {
+        response.on('data', function(chunk) {
+          body += chunk;
+        });
+        response.on('end', function() {
+          body = JSON.parse(body);
+
+          const hash = body.commit.parents[0].sha;
+          resolve({
+            behind: hash != parentVersion,
+            parentVersion,
+            hash,
+            response,
+            repository,
+            hashPath,
+          });
+        });
+
+      } else {
+        reject(`Failed to check for latest version.
+            ${JSON.stringify(response)}`);
+      }
+    });
+  });
+};
 
 const patchRomFromJSON = (rom) => {
   return new Promise((resolve, reject) => {
@@ -76,4 +114,5 @@ const buildRom = (file,
 module.exports = {
   ROM,
   buildRom,
+  checkForUpdates,
 };
