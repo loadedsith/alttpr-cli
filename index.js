@@ -4,8 +4,41 @@ const path = require('path');
 const fs = require('fs');
 const vt_base_patch = require('./vt_base_patch.json');
 const current_rom_hash = require('./current_rom_hash.json');
-
 const s3_prefix = "https://s3.us-east-2.amazonaws.com/alttpr-patches";
+const https = require('https');
+
+const checkForUpdates = () => {
+  return new Promise((resolve, reject) => {
+    const {repository} = require('./package.json');
+    const hashPath = repository.replace('github:',
+        'https://api.github.com/repos/') + '/branches/master'
+    https.get(hashPath, (response) => {
+      let body = '';
+
+      if (response.statusCode == 200 && response.statusCode < 299) {
+        response.on('data', function(chunk) {
+          body += chunk;
+        });
+        response.on('end', function() {
+          body = JSON.parse(body);
+          console.log({body,version: process.versions});
+
+          const hash = body.commit.sha;
+          resolve({
+            hash,
+            response,
+            repository,
+            hashPath,
+          })
+
+        });
+
+      } else {
+        dailyReject(`Failed to download daily. ${JSON.stringify(response)}`);
+      }
+    });
+  });
+};
 
 const patchRomFromJSON = (rom) => {
   return new Promise((resolve, reject) => {
@@ -76,4 +109,5 @@ const buildRom = (file,
 module.exports = {
   ROM,
   buildRom,
+  checkForUpdates,
 };

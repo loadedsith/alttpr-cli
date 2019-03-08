@@ -14,7 +14,32 @@ const scope = nock('https://s3.us-east-2.amazonaws.com')
     fs.readFile(`./spec/sprites/www/${spriteName}`, cb); // Error-first callback
   });
 
+const scopeGithub = nock('https://api.github.com')
+  .get('/repos/loadedsith/alttpr-cli/branches/master')
+  .reply(200, (uri, requestBody, cb) => {
+    fs.readFile(`./spec/github-api/www/master.json`, cb);
+  });
+
+
 nock.disableNetConnect();
+describe('autoUpdate', () => {
+  it('should exist', () => {
+    expect(randomizerCLI.checkForUpdates).not.toBeUndefined();
+  });
+
+  it('should get current package', (done) => {
+    expect(randomizerCLI.checkForUpdates().then((results) => {
+      expect(results.repository).toEqual('github:loadedsith/alttpr-cli');
+      expect(results.hashPath)
+        .toEqual('https://api.github.com/repos/loadedsith/alttpr' +
+            '-cli/branches/master');
+      expect(results.hash)
+        .toEqual('c00beb6313845885ee66d5f46c6a2dea80a6fba2');
+      done();
+    }))
+  });
+});
+
 describe('rom', () => {
   beforeAll(() => {
     let removeTestFiles = [

@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "run.js",
-  "bin" : { "alttpr-cli" : "./run.js" },
+  "repository": "github:loadedsith/alttpr-cli",
+  "bin": {
+    "alttpr-cli": "./run.js"
+  },
   "scripts": {
     "start": "node run.js",
     "test": "jasmine",
@@ -12,7 +15,8 @@
     "watch-test": "nodemon --ignore bundle.js --ext js,jade --exec 'npm run test'",
     "watch": "nodemon --ignore bundle.js --ext js,jade --exec 'npm run build'",
     "download-sprites": "node downloadSprites.js",
-    "postinstall": "./updateSprites.sh"
+    "postinstall": "./updateSprites.sh",
+    "precommit": ["test"]
   },
   "author": "",
   "license": "ISC",
@@ -25,6 +29,7 @@
     "yargs": "^13.2.0"
   },
   "devDependencies": {
-    "nock": "^10.0.6"
+    "nock": "^10.0.6",
+    "pre-commit": "^1.2.2"
   }
 }
