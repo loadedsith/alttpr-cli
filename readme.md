@@ -163,7 +163,7 @@ Hash based roms:
 
 Customization can be applied to `~/RetroPie/retropiemenu/alttpr-cli.sh` after installation.
 
-To see the new rom restart EmulatorStation after each run.
+To see the new rom restart EmulatorStation after each run.  This should be done automatically, but it is worth noting.
 
 SSH in to your Pi.
 
