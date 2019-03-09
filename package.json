@@ -10,7 +10,7 @@
   "scripts": {
     "start": "node run.js",
     "test": "jasmine",
-    "test-inspect": "node --inspect-brk  ./node_modules/jasmine/bin/jasmine.js",
+    "test-inspect": "node --trace-warnings --inspect-brk  ./node_modules/jasmine/bin/jasmine.js",
     "watch-test-inspect": "nodemon --ignore bundle.js --ext js,jade --exec 'npm run test-inspect'",
     "watch-test": "nodemon --ignore bundle.js --ext js,jade --exec 'npm run test'",
     "watch": "nodemon --ignore bundle.js --ext js,jade --exec 'npm run build'",

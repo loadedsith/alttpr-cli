@@ -27,7 +27,7 @@ describe('autoUpdate', () => {
     expect(randomizerCLI.checkForUpdates(parentVersion).then((results) => {
       expect(results.repository).toEqual('github:loadedsith/alttpr-cli');
       expect(results.hashPath)
-        .toEqual('https://api.github.com/repos/loadedsith/alttpr' +
+        .toEqual('https://api.github.com:443/repos/loadedsith/alttpr' +
             '-cli/branches/master');
       // Hash comes from the server, it is also the parent sha of th last commit
       expect(results.hash)
@@ -58,7 +58,7 @@ describe('autoUpdate', () => {
 });
 
 describe('rom', () => {
-  beforeAll(() => {
+  beforeEach(() => {
     scope = nock('https://s3.us-east-2.amazonaws.com')
         .persist()
         .get(/(.*)/)
@@ -67,16 +67,23 @@ describe('rom', () => {
               path.basename(url.parse(uri).pathname);
           fs.readFile(`./spec/sprites/www/${spriteName}`, cb);
         });
-
+  });
+  beforeAll(() => {
     let removeTestFiles = [
       './spec/index/workspace/Daily Challenge: Feb 13, 2019.sfc',
     ];
     removeTestFiles.forEach((file) => {
       if (fs.existsSync(file)) {
-        fs.unlink(file);
+        fs.unlink(file, (err) => {
+          if (err) {
+            throw err
+          };
+          console.log(`${file} was deleted`);
+        });
       }
     });
   });
+
   it('should load', () => {
     expect(randomizerCLI.ROM).not.toBeUndefined();
   });

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-echo " █████╗ ██╗  ████████╗████████╗██████╗
+echo "
+█████╗ ██╗  ████████╗████████╗██████╗
 ██╔══██╗██║  ╚══██╔══╝╚══██╔══╝██╔══██╗
 ███████║██║     ██║      ██║   ██████╔╝
 ██╔══██║██║     ██║      ██║   ██╔═══╝
@@ -13,7 +14,10 @@ echo " █████╗ ██╗  ████████╗█████�
 ██╔══██╗██╔══██║██║╚██╗██║██║  ██║██║   ██║██║╚██╔╝██║██║ ███╔╝  ██╔══╝  ██╔══██╗
 ██║  ██║██║  ██║██║ ╚████║██████╔╝╚██████╔╝██║ ╚═╝ ██║██║███████╗███████╗██║  ██║
 ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝  ╚═════╝ ╚═╝     ╚═╝╚═╝╚══════╝╚══════╝╚═╝  ╚═╝
-                                                                                 "
+
+https://alttpr.com/en/daily
+https://github.com/loadedsith/alttpr-cli
+"
 
 if [[ -z "${ALTTPR_SNES_ROMS}" ]]; then
   SNES_ROM="/home/pi/RetroPie/roms/snes"
@@ -30,13 +34,22 @@ fi
 if [ -d "$SNES_ROM" ]; then
   cd $SNES_ROM;
 fi
+echo "
+Working directory: $SNES_ROM
+"
+npx -p github:loadedsith/alttpr-cli -c "alttpr-cli check && alttpr-cli update && alttpr-cli build $BUILD_FLAGS"
 
-npx -p github:loadedsith/alttpr-cli -c "alttpr-cli update && alttpr-cli build $BUILD_FLAGS"
+echo "
+Rom built!
+Waiting 10 seconds so you can see what you're up against!
+"
 
-echo "\nRom built!\n Waiting 10 seconds so you can see what you're up against!\n"
 sleep 10s
 
-echo "\nRestarting emulation station\n"
+echo "
+Restarting emulation station.
+"
+
 sleep 3s
 
 touch /tmp/es-restart

@@ -1,7 +1,13 @@
 #!/usr/bin/env node
-const randomizerCLI = require('./index.js')
-const {getCurrentRomHash, getCurrentBasePatch, getCurrentDailyPatch, getPatch} =
-    require('./updateDaily.js');
+const randomizerCLI = require('./index.js');
+const {
+  getCurrentRomHash,
+  getCurrentBasePatch,
+  getCurrentDailyPatch,
+  getPatch,
+} = require('./updateDaily.js');
+const path = require('path');
+const fs = require('fs');
 
 const randomChoice = function(choices) {
   return choices[Math.floor(Math.random() * choices.length)]
@@ -9,6 +15,29 @@ const randomChoice = function(choices) {
 
 require('yargs')
     .usage('Usage: $0 <command> [options]')
+
+    .command({
+      command: 'check',
+      aliases: ['c'],
+      desc: 'Check if this is the latest edition of alttpr-cli',
+      handler: (argv) => {
+        console.log('Checking for current version.');
+        randomizerCLI.checkForUpdates().then((results) => {
+          if (results.behind) {
+            parentVersion = fs.readFileSync(
+                path.join(__dirname, '.parent-version'), 'utf8');
+            console.log('Behind by at least one version. Current parent' +
+                ` version: ${parentVersion.slice(0,8)}. Latest parent` +
+                ` ${results.hash.slice(0,8)}`);
+          } else {
+            console.log('You\'re on the latest, which is' +
+                ` ${results.parentVersion.slice(0,8)}.`);
+          }
+        }).catch((e) => {
+          throw e
+        })
+      }
+    })
 
     .command({
       command: 'daily',

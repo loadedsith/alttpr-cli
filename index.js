@@ -4,43 +4,55 @@ const path = require('path');
 const fs = require('fs');
 const vt_base_patch = require('./vt_base_patch.json');
 const current_rom_hash = require('./current_rom_hash.json');
-const s3_prefix = "https://s3.us-east-2.amazonaws.com/alttpr-patches";
+const s3_prefix = 'https://s3.us-east-2.amazonaws.com/alttpr-patches';
 const https = require('https');
+const {repository} = require('./package.json');
 
 const checkForUpdates = (parentVersion) => {
   return new Promise((resolve, reject) => {
-    const {repository} = require('./package.json');
     if (!parentVersion) {
-      parentVersion = fs.readFileSync('./.parent-version', 'utf8');
+      parentVersion = fs.readFileSync(
+          path.join(__dirname, '.parent-version'), 'utf8');
     }
 
-    const hashPath = repository.replace('github:',
-        'https://api.github.com/repos/') + '/branches/master'
-    https.get(hashPath, (response) => {
+    const options = {
+      host: 'api.github.com',
+      port: 443,
+      path: `/repos/${repository.replace('github:', '')}/branches/master`,
+      headers: {
+        'User-Agent': 'alttpr-cli',
+        'Authorization': 'Basic ' +
+            new Buffer('loadedsith:2c63afe45bca58f924bbad1d3c004048b73de118')
+            .toString('base64'),
+      },
+    };
+    https.get(options, (response) => {
       let body = '';
-
+      response.setEncoding('utf8');
       if (response.statusCode == 200 && response.statusCode < 299) {
         response.on('data', function(chunk) {
           body += chunk;
         });
+
         response.on('end', function() {
           body = JSON.parse(body);
 
           const hash = body.commit.parents[0].sha;
           resolve({
-            behind: hash != parentVersion,
+            behind: parentVersion.indexOf(hash) == -1,
             parentVersion,
             hash,
             response,
             repository,
-            hashPath,
+            hashPath: `https://${options.host}${options.path}`,
           });
         });
 
       } else {
-        reject(`Failed to check for latest version.
-            ${JSON.stringify(response)}`);
+        reject(`Failed to check for latest version. ${response.statusCode}`);
       }
+    }).on('error', (e) => {
+      throw e;
     });
   });
 };
@@ -84,7 +96,7 @@ const buildRom = (file,
 
         }).catch(reject);
     });
-  })
+  });
 
   return new Promise((resolve, reject) => {
     Promise.all([
@@ -102,14 +114,13 @@ const buildRom = (file,
         }
         rom.parseSprGfx(sprite);
         rom.save(`${savePath}${rom.downloadFilename()}.sfc`);
-        resolve(rom)
+        resolve(rom);
       }).catch((e) => {
-        console.log('error', e)
+        console.log('error', e);
         reject(e);
       });
-  })
-
-}
+  });
+};
 
 module.exports = {
   ROM,

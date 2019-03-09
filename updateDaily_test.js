@@ -21,7 +21,12 @@ describe('Daily update', () => {
     ];
     removeTestFiles.forEach((file) => {
       if (fs.existsSync(file)) {
-        fs.unlink(file);
+        fs.unlink(file, (err) => {
+          if (err) {
+            throw err
+          };
+          console.log(`${file} was deleted`);
+        });
       }
     })
   });
