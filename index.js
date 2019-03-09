@@ -6,7 +6,6 @@ const vt_base_patch = require('./vt_base_patch.json');
 const current_rom_hash = require('./current_rom_hash.json');
 const s3_prefix = 'https://s3.us-east-2.amazonaws.com/alttpr-patches';
 const https = require('https');
-const {repository} = require('./package.json');
 
 const checkForUpdates = (parentVersion) => {
   return new Promise((resolve, reject) => {
@@ -18,12 +17,10 @@ const checkForUpdates = (parentVersion) => {
     const options = {
       host: 'api.github.com',
       port: 443,
-      path: `/repos/${repository.replace('github:', '')}/branches/master`,
+      path: `/repos/loadedsith/alttpr-cli/branches/master`,
       headers: {
         'User-Agent': 'alttpr-cli',
-        'Authorization': 'Basic ' +
-            new Buffer('loadedsith:2c63afe45bca58f924bbad1d3c004048b73de118')
-            .toString('base64'),
+        'Authorization': 'Basic loadedsith',
       },
     };
     https.get(options, (response) => {
@@ -43,7 +40,6 @@ const checkForUpdates = (parentVersion) => {
             parentVersion,
             hash,
             response,
-            repository,
             hashPath: `https://${options.host}${options.path}`,
           });
         });

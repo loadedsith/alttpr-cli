@@ -25,7 +25,6 @@ describe('autoUpdate', () => {
 
   it('should get current package', (done) => {
     expect(randomizerCLI.checkForUpdates(parentVersion).then((results) => {
-      expect(results.repository).toEqual('github:loadedsith/alttpr-cli');
       expect(results.hashPath)
         .toEqual('https://api.github.com:443/repos/loadedsith/alttpr' +
             '-cli/branches/master');
