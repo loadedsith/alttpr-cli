@@ -2,6 +2,18 @@ const zlib = require('zlib');
 const https = require('https');
 const fs = require('fs');
 
+const downloadFilename = function(patch) {
+  return patch.name
+    || 'ALttP - VT_' + patch.logic
+    + '_' + patch.difficulty
+    + '-' + patch.mode
+    + (patch.weapons ? '_' + patch.weapons : '')
+    + '-' + patch.goal
+    + (patch.variation == 'none' ? '' : '_' + patch.variation)
+    + '_' + patch.hash
+    + (patch.special ? '_special' : '');
+};
+
 let dailyRequest;
 let dailyResolve;
 let dailyReject;
@@ -10,6 +22,58 @@ let dailyPromise = new Promise((resolve, reject) => {
   dailyResolve = resolve;
   dailyReject = reject;
 });
+
+function pad(n){return n<10 ? '0'+n : n};
+
+const getGameListFromPatch = (patch='daily.json', buildConfig) => {
+  const {logic, difficulty, spoiler, hash, size, generated} =
+      JSON.parse(fs.readFileSync(patch, 'utf8'));
+
+  patch = {
+      logic, difficulty, spoiler, hash, size, generated
+  };
+
+  const filename = downloadFilename(spoiler.meta);
+
+  let release = new Date(generated);
+  release = `${release.getFullYear()}${pad(release.getMonth() + 1)}` +
+      `${pad(release.getDate() + 1)}T${pad(release.getHours())}` +
+      `${pad(release.getSeconds())}00`;
+
+  return {
+    filename,
+    patch,
+    xml: `<game>
+  <path>${filename}.sfc</path>
+  <name>ALttP:R - ${filename}</name>
+  <desc>A Link to the Past: Randomizer - ${filename}
+
+  Goal: ${spoiler.meta.goal},
+  Mode: ${spoiler.meta.mode},
+  Logic: ${spoiler.meta.logic},
+  Weapons: ${spoiler.meta.weapons},
+  Rom mode: ${spoiler.meta.rom_mode},
+  Variation: ${spoiler.meta.variation},
+  Difficulty: ${spoiler.meta.difficulty},
+  Difficulty mode: ${spoiler.meta.difficulty_mode},
+  Tournament: ${spoiler.meta.tournament},
+  Build: ${spoiler.meta.build},
+  Generated: ${generated}
+
+${buildConfig ? `Build Config: ${JSON.stringify(buildConfig, null, 2)}`: ''}
+
+  ALttP: Randomizer is a new take on the classic game The Legend of Zelda: A Link to the Past. Each playthrough shuffles the location of all the important items in the game. Will you find the Bow atop Death Mountain, the Fire Rod resting silently in the library, or even the Master Sword itself waiting in a chicken coop?
+
+  Challenge your friends to get the fastest time on a particular shuffle or take part in the weekly speedrun competition. Hone your skills enough and maybe you&#x2019;ll take home the crown in our twice-yearly invitational tournament. See you in Hyrule!
+  </desc>
+  <image>./media/screenshots/A Link To the Past Randomizer.png</image>
+  <marquee>./media/marquees/A Link To the Past Randomizer.png</marquee>
+  <releasedate>${release}</releasedate>
+  <developer>Veetorp, Karkat, Christos0wen, Smallhacker and Dessyreqt<developer/>
+  <publisher>alttpr.com<publisher/>
+</game>`,
+  }
+};
 
 const getDaily = () => {
   if (!dailyRequest) {
@@ -134,6 +198,7 @@ const getCurrentBasePatch = (path='./base_patch.json', write=true) => {
 };
 
 module.exports = {
+  getGameListFromPatch,
   getCurrentRomHash,
   getCurrentDailyPatch,
   getCurrentDailyHash,
