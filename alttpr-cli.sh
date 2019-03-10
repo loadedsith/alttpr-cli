@@ -58,31 +58,32 @@ A Link to the Past: Randomizer
 by Veetorp, Karkat, Christos0wen, Smallhacker and Dessyreqt
 alttpr.com/en/daily
 
-this script by loadedsith
+Patcher Node.js port by loadedsith.
 
 github.com/loadedsith/alttpr-cli"
 
-
-
-
+# Check for ALTTPR_SNES_ROMS, use it as SNES_ROM or a default
+#    "/home/pi/RetroPie/roms/snes"
 if [[ -z "${ALTTPR_SNES_ROMS}" ]]; then
   SNES_ROM="/home/pi/RetroPie/roms/snes"
 else
   SNES_ROM="${ALTTPR_SNES_ROMS}"
 fi
 
+# Check for ALTTPR_BUILD_FLAGS, use it as BUILD_FLAGS or a default "-t random"
 if [[ -z "${ALTTPR_BUILD_FLAGS}" ]]; then
   BUILD_FLAGS="-t random"
 else
   BUILD_FLAGS="${ALTTPR_BUILD_FLAGS}"
 fi
 
-if [ -d "$SNES_ROM" ]; then
-  cd $SNES_ROM;
-fi
+
+cd $SNES_ROM;
+
 echo "
 Working directory: $SNES_ROM
 "
+
 npx -p github:loadedsith/alttpr-cli -c "alttpr-cli check && echo '' && alttpr-cli update && echo '' && alttpr-cli build $BUILD_FLAGS && echo '' "
 
 echo "
@@ -95,8 +96,6 @@ sleep 10s
 echo "
 Restarting emulation station.
 "
-
-sleep 3s
 
 touch /tmp/es-restart
 killall emulationstation

@@ -124,7 +124,6 @@ require('yargs')
       aliases: ['b'],
       desc: 'Update daily rom',
       handler: (argv) => {
-        console.log('Building rom with these customizations: ');
         let {
           rom,
           quickswap,
@@ -176,16 +175,17 @@ require('yargs')
           ]);
         }
 
-        console.log({
-          quickswap,
-          musicVolume,
-          menuSpeed,
-          heartColor,
-          heartSpeed,
-          spriteName,
-          patch,
-          spoiler,
-        });
+        console.log('Building rom with these customizations: ');
+        console.log(`
+          Quickswap: ${quickswap}
+          Music Volume: ${musicVolume}
+          Menu Speed: ${menuSpeed}
+          Heart Color: ${heartColor}
+          Heart Speed: ${heartSpeed}
+          Sprite Name: ${spriteName}
+          Patch: ${patch}
+          Spoiler: ${spoiler}
+        `);
 
         randomizerCLI.buildRom(rom,
           quickswap,
@@ -198,22 +198,21 @@ require('yargs')
         ).then((rom) => {
           console.log('Building rom with these patch settings: ');
 
-          console.log({
-            logic: rom.logic,
-            difficulty: rom.difficulty,
-            mode: rom.mode,
-            name: rom.name,
-            build: rom.build,
-            logic: rom.logic,
-            weapons: rom.weapons,
-            rom_mode: rom.rom_mode,
-            variation: rom.variation,
-            difficulty: rom.difficulty,
-            tournament: rom.tournament,
-            hash: rom.hash,
-            size: rom.size,
-            generated: rom.generated,
-          });
+          console.log(`
+            Logic: ${rom.logic}
+            Difficulty: ${rom.difficulty}
+            Mode: ${rom.mode}
+            Name: ${rom.name}
+            Build: ${rom.build}
+            Logic: ${rom.logic}
+            Weapons: ${rom.weapons}
+            Rom Mode: ${rom.rom_mode}
+            Variation: ${rom.variation}
+            Difficulty: ${rom.difficulty}
+            Tournament: ${rom.tournament}
+            Hash: ${rom.hash}
+            Size: ${rom.size}
+            Generated: ${rom.generated}`);
 
           if (spoiler) {
             console.log({
