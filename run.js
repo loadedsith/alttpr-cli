@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 const randomizerCLI = require('./index.js');
 const {
+  getGameListFromPatch,
   getCurrentRomHash,
   getCurrentBasePatch,
   getCurrentDailyPatch,
@@ -15,6 +16,15 @@ const randomChoice = function(choices) {
 
 require('yargs')
     .usage('Usage: $0 <command> [options]')
+
+    .command({
+      command: 'gamelist $0',
+      aliases: ['x', 'xml'],
+      desc: 'Get a game list xml for patch',
+      handler: (argv) => {
+        console.log(getGameListFromPatch(argv.$0).xml);
+      },
+    })
 
     .command({
       command: 'check',
