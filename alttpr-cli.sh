@@ -77,12 +77,8 @@ else
   GAMELIST="${ALTTPR_GAMELIST}"
 fi
 
-
 cd $SNES_ROM;
 
-echo "
-Working directory: $SNES_ROM
-"
 npx -p github:loadedsith/alttpr-cli -c "echo 'Check for updates' && \
   alttpr-cli check && \
   echo 'Get latest build' && \
@@ -113,7 +109,7 @@ else
       if [[ -z "${HAS_GAME}" ]]; then
         echo "Updating gamedata.xml for $GAME_PATH"
 
-        XML_PATH=$(xmlstarlet sel -t -v "/game/path" daily.xml);
+        XML_PATH="./$(xmlstarlet sel -t -v "/game/path" daily.xml)";
         NAME=$(xmlstarlet sel -t -v "/game/name" daily.xml);
         DESC=$(xmlstarlet sel -t -v "/game/desc" daily.xml);
         IMAGE=$(xmlstarlet sel -t -v "/game/image" daily.xml);
@@ -122,7 +118,7 @@ else
         DEVELOPER=$(xmlstarlet sel -t -v "/game/developer" daily.xml);
         PUBLISHER=$(xmlstarlet sel -t -v "/game/publisher" daily.xml);
 
-        xmlstarlet ed --subnode "/gameList" --type elem -n gameTMP -v "" \
+        xmlstarlet ed --inplace --subnode "/gameList" --type elem -n gameTMP -v "" \
             -s //gameTMP -t elem -n path -v "$XML_PATH" \
             -s //gameTMP -t elem -n name -v "$NAME" \
             -s //gameTMP -t elem -n desc -v "$DESC" \
@@ -132,7 +128,7 @@ else
             -s //gameTMP -t elem -n developer -v "$DEVELOPER" \
             -s //gameTMP -t elem -n publisher -v "$PUBLISHER" \
             -r //gameTMP -v game \
-            $GAMELIST > $GAMELIST
+            $GAMELIST
       else
         echo "Already had gamedata in xml. $HAS_GAME"
       fi
