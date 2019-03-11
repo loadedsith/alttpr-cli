@@ -66,7 +66,7 @@ github.com/loadedsith/alttpr-cli"
 #    "/home/pi/RetroPie/roms/snes"
 if [[ -z "${ALTTPR_SNES_ROMS}" ]]; then
   SNES_ROM="/home/pi/RetroPie/roms/snes"
-  echo "ALTTPR_GAMELIST not set, using default: $SNES_ROM";
+  echo "ALTTPR_SNES_ROMS not set, using default: $SNES_ROM";
 else
   SNES_ROM="${ALTTPR_SNES_ROMS}"
 fi
@@ -81,7 +81,7 @@ fi
 # Check for ALTTPR_GAMELIST
 if [[ -z "${ALTTPR_GAMELIST}" ]]; then
   GAMELIST="/home/pi/RetroPie/roms/snes/gamelist.xml"
-  echo "ALTTPR_SNES_ROMS not set, using default: $GAMELIST";
+  echo "ALTTPR_GAMELIST not set, using default: $GAMELIST";
 else
   GAMELIST="${ALTTPR_GAMELIST}"
 fi
@@ -141,7 +141,7 @@ else
             -s //gameTMP -t elem -n developer -v "$DEVELOPER" \
             -s //gameTMP -t elem -n publisher -v "$PUBLISHER" \
             -r //gameTMP -v game \
-            gamelistDummy.xml
+            $GAMELIST > $GAMELIST
       else
         echo "Already had gamedata in xml. $HAS_GAME"
       fi
@@ -150,16 +150,12 @@ else
   fi
 fi
 
-
-
-exit
-
 echo "
 Rom built!
-Waiting 10 seconds so you can see what you're up against!
+Waiting 15 seconds so you can see what you're up against!
 "
 
-sleep 10s
+sleep 15s
 
 echo "
 Restarting emulation station.
