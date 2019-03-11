@@ -66,6 +66,7 @@ github.com/loadedsith/alttpr-cli"
 #    "/home/pi/RetroPie/roms/snes"
 if [[ -z "${ALTTPR_SNES_ROMS}" ]]; then
   SNES_ROM="/home/pi/RetroPie/roms/snes"
+  echo "ALTTPR_GAMELIST not set, using default: $SNES_ROM";
 else
   SNES_ROM="${ALTTPR_SNES_ROMS}"
 fi
@@ -73,8 +74,16 @@ fi
 # Check for ALTTPR_BUILD_FLAGS, use it as BUILD_FLAGS or a default "-t random"
 if [[ -z "${ALTTPR_BUILD_FLAGS}" ]]; then
   BUILD_FLAGS="-t random"
+  echo "ALTTPR_BUILD_FLAGS not set, using default: $BUILD_FLAGS";
 else
   BUILD_FLAGS="${ALTTPR_BUILD_FLAGS}"
+fi
+# Check for ALTTPR_GAMELIST
+if [[ -z "${ALTTPR_GAMELIST}" ]]; then
+  GAMELIST="/home/pi/RetroPie/roms/snes/gamelist.xml"
+  echo "ALTTPR_SNES_ROMS not set, using default: $GAMELIST";
+else
+  GAMELIST="${ALTTPR_GAMELIST}"
 fi
 
 
@@ -83,8 +92,67 @@ cd $SNES_ROM;
 echo "
 Working directory: $SNES_ROM
 "
+npx -p github:loadedsith/alttpr-cli -c "echo 'Check for updates' && \
+  alttpr-cli check && \
+  echo 'Get latest build' && \
+  alttpr-cli update && \
+  echo 'Build from latest' && \
+  alttpr-cli build $BUILD_FLAGS && \
+  echo 'Get gameslist snippet' && \
+  alttpr-cli gamelist ./daily.json > ./daily.xml
+"
+echo "
+Updating of gamelist.xml
+"
+if [ ! -f $GAMELIST ]; then
+  echo "gamelist.xml not found! (GAMELIST: $GAMELIST)"
+else
+  if [ ! -f ./daily.xml ]; then
+    echo "daily.xml not found! (PWD: ${pwd})"
+  else
+    GAME_PATH=$(xmlstarlet sel -t -v "/game/path" daily.xml);
 
-npx -p github:loadedsith/alttpr-cli -c "alttpr-cli check && echo '' && alttpr-cli update && echo '' && alttpr-cli build $BUILD_FLAGS && echo '' "
+    if [[ -z "${GAME_PATH}" ]]; then
+      echo "No game/path found in daily.xml data retrieval has failed on its first attempt. $GAMELIST will not be updated.";
+      echo "daily.xml";
+      cat ./daily.xml
+    else
+      HAS_GAME=$(xmlstarlet sel -t -v "/gameList/game[path='$GAME_PATH']" \
+          $GAMELIST);
+      if [[ -z "${HAS_GAME}" ]]; then
+        echo "Updating gamedata.xml for $GAME_PATH"
+
+        XML_PATH=$(xmlstarlet sel -t -v "/game/path" daily.xml);
+        NAME=$(xmlstarlet sel -t -v "/game/name" daily.xml);
+        DESC=$(xmlstarlet sel -t -v "/game/desc" daily.xml);
+        IMAGE=$(xmlstarlet sel -t -v "/game/image" daily.xml);
+        MARQUEE=$(xmlstarlet sel -t -v "/game/marquee" daily.xml);
+        RELEASE_DATE=$(xmlstarlet sel -t -v "/game/releasedate" daily.xml);
+        DEVELOPER=$(xmlstarlet sel -t -v "/game/developer" daily.xml);
+        PUBLISHER=$(xmlstarlet sel -t -v "/game/publisher" daily.xml);
+
+        xmlstarlet ed --subnode "/gameList" --type elem -n gameTMP -v "" \
+            -s //gameTMP -t elem -n path -v "$XML_PATH" \
+            -s //gameTMP -t elem -n name -v "$NAME" \
+            -s //gameTMP -t elem -n desc -v "$DESC" \
+            -s //gameTMP -t elem -n image -v "$IMAGE" \
+            -s //gameTMP -t elem -n marquee -v "$MARQUEE" \
+            -s //gameTMP -t elem -n releasedate -v "$RELEASE_DATE" \
+            -s //gameTMP -t elem -n developer -v "$DEVELOPER" \
+            -s //gameTMP -t elem -n publisher -v "$PUBLISHER" \
+            -r //gameTMP -v game \
+            gamelistDummy.xml
+      else
+        echo "Already had gamedata in xml. $HAS_GAME"
+      fi
+      echo "GAMELIST_XML_GAME $GAMELIST_XML_GAME"
+    fi
+  fi
+fi
+
+
+
+exit
 
 echo "
 Rom built!

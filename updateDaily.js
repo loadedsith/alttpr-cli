@@ -69,8 +69,8 @@ ${buildConfig ? `Build Config: ${JSON.stringify(buildConfig, null, 2)}`: ''}
   <image>./media/screenshots/A Link To the Past Randomizer.png</image>
   <marquee>./media/marquees/A Link To the Past Randomizer.png</marquee>
   <releasedate>${release}</releasedate>
-  <developer>Veetorp, Karkat, Christos0wen, Smallhacker and Dessyreqt<developer/>
-  <publisher>alttpr.com<publisher/>
+  <developer>Veetorp, Karkat, Christos0wen, Smallhacker and Dessyreqt</developer>
+  <publisher>alttpr.com</publisher>
 </game>`,
   }
 };

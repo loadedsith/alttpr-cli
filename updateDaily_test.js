@@ -63,8 +63,8 @@ describe('Daily update', () => {
   <image>./media/screenshots/A Link To the Past Randomizer.png</image>
   <marquee>./media/marquees/A Link To the Past Randomizer.png</marquee>
   <releasedate>20190213T180000</releasedate>
-  <developer>Veetorp, Karkat, Christos0wen, Smallhacker and Dessyreqt<developer/>
-  <publisher>alttpr.com<publisher/>
+  <developer>Veetorp, Karkat, Christos0wen, Smallhacker and Dessyreqt</developer>
+  <publisher>alttpr.com</publisher>
 </game>`;
     expect(getGameListFromPatch).not.toBeUndefined();
     expect(getGameListFromPatch('./spec/daily/www/daily.json'))
