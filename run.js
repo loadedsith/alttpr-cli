@@ -14,6 +14,18 @@ const randomChoice = function(choices) {
   return choices[Math.floor(Math.random() * choices.length)]
 };
 
+
+// Colors reference
+const c = {
+  'Bright': "\x1b[1m",
+  'Dim': "\x1b[2m",
+  'Underscore': "\x1b[4m",
+  'Blink': "\x1b[5m",
+  'Reverse': "\x1b[7m",
+  'Hidden': "\x1b[8m",
+  'Reset': "\x1b[0m",
+};
+
 require('yargs')
     .usage('Usage: $0 <command> [options]')
 
@@ -184,18 +196,27 @@ require('yargs')
               'Zero Suit Samus', 'Zora'
           ]);
         }
-
+        let bashPair = function(label, value, level=false) {
+          if (typeof value !== 'undefined') {
+            let highlight = level ? c.Bright : c.Dim;
+            return (`${c.Underscore}${label}${c.Reset}:`+
+              ` ${highlight}${value}${c.Reset}\n`)
+          }
+          return '';
+        }
         console.log('Building rom with these customizations: ');
-        console.log(`
-          Quickswap: ${quickswap}
-          Music Volume: ${musicVolume}
-          Menu Speed: ${menuSpeed}
-          Heart Color: ${heartColor}
-          Heart Speed: ${heartSpeed}
-          Sprite Name: ${spriteName}
-          Patch: ${patch}
-          Spoiler: ${spoiler}
-        `);
+        let customizations = [
+          bashPair('Sprite Name', spriteName, 1),
+          bashPair('Music Volume', musicVolume),
+          bashPair('Menu Speed', menuSpeed),
+          bashPair('Heart Color', heartColor),
+          bashPair('Heart Speed', heartSpeed),
+          bashPair('Quickswap', quickswap),
+          bashPair('Spoiler', spoiler),
+          bashPair('Patch', patch),
+        ];
+
+        console.log(customizations.join(''))
 
         randomizerCLI.buildRom(rom,
           quickswap,
@@ -206,23 +227,28 @@ require('yargs')
           spriteName,
           patch,
         ).then((rom) => {
-          console.log('Building rom with these patch settings: ');
-
-          console.log(`
-            Logic: ${rom.logic}
-            Difficulty: ${rom.difficulty}
-            Mode: ${rom.mode}
-            Name: ${rom.name}
-            Build: ${rom.build}
-            Logic: ${rom.logic}
-            Weapons: ${rom.weapons}
-            Rom Mode: ${rom.rom_mode}
-            Variation: ${rom.variation}
-            Difficulty: ${rom.difficulty}
-            Tournament: ${rom.tournament}
-            Hash: ${rom.hash}
-            Size: ${rom.size}
-            Generated: ${rom.generated}`);
+          console.log('Built rom with these patch settings: ');
+          let patchSettings = [
+            bashPair('Goal', rom.goal, 1),
+            bashPair('Mode', rom.mode, 1),
+            bashPair('Difficulty', rom.difficulty, 1),
+            bashPair('Difficulty Mode', rom.difficulty_mode, 1),
+            bashPair('Notes', rom.notes),
+            bashPair('Special', rom.special),
+            bashPair('Weapons', rom.weapons, 1),
+            bashPair('Shuffle', rom.shuffle, 1),
+            bashPair('Rom Mode', rom.rom_mode, 1),
+            bashPair('Variation', rom.variation, 1),
+            '\n',
+            bashPair('Tournament', rom.tournament),
+            bashPair('Logic', rom.logic),
+            bashPair('Name', rom.name),
+            bashPair('Hash', rom.hash),
+            bashPair('Build', rom.build),
+            bashPair('Generated', rom.generated),
+          ]
+          console.log(patchSettings.join(''));
+          console.log(`\x1b[0mReset`);
 
           if (spoiler) {
             console.log({

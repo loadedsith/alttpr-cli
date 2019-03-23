@@ -54,7 +54,6 @@ const getGameListFromPatch = (patch='daily.json', buildConfig) => {
   Weapons: ${spoiler.meta.weapons},
   Rom mode: ${spoiler.meta.rom_mode},
   Variation: ${spoiler.meta.variation},
-  Difficulty: ${spoiler.meta.difficulty},
   Difficulty mode: ${spoiler.meta.difficulty_mode},
   Tournament: ${spoiler.meta.tournament},
   Build: ${spoiler.meta.build},
@@ -67,6 +66,7 @@ ${buildConfig ? `Build Config: ${JSON.stringify(buildConfig, null, 2)}`: ''}
   Challenge your friends to get the fastest time on a particular shuffle or take part in the weekly speedrun competition. Hone your skills enough and maybe you&#x2019;ll take home the crown in our twice-yearly invitational tournament. See you in Hyrule!
   </desc>
   <image>./media/screenshots/A Link To the Past Randomizer.png</image>
+  <genre>Randomized, Fantasy, Rpg, Topdown, Wanderer</genre>
   <marquee>./media/marquees/A Link To the Past Randomizer.png</marquee>
   <releasedate>${release}</releasedate>
   <developer>Veetorp, Karkat, Christos0wen, Smallhacker and Dessyreqt</developer>

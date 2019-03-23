@@ -48,7 +48,6 @@ describe('Daily update', () => {
   Weapons: uncle,
   Rom mode: NoGlitches,
   Variation: none,
-  Difficulty: easy,
   Difficulty mode: Easy,
   Tournament: true,
   Build: 2018-10-18,
@@ -61,6 +60,7 @@ describe('Daily update', () => {
   Challenge your friends to get the fastest time on a particular shuffle or take part in the weekly speedrun competition. Hone your skills enough and maybe you&#x2019;ll take home the crown in our twice-yearly invitational tournament. See you in Hyrule!
   </desc>
   <image>./media/screenshots/A Link To the Past Randomizer.png</image>
+  <genre>Randomized, Fantasy, Rpg, Topdown, Wanderer</genre>
   <marquee>./media/marquees/A Link To the Past Randomizer.png</marquee>
   <releasedate>20190213T180000</releasedate>
   <developer>Veetorp, Karkat, Christos0wen, Smallhacker and Dessyreqt</developer>

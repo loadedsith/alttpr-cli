@@ -79,18 +79,18 @@ fi
 
 cd $SNES_ROM;
 
-npx -p github:loadedsith/alttpr-cli -c "echo 'Check for updates' && \
-  alttpr-cli check && \
-  echo 'Get latest build' && \
+npx -p github:loadedsith/alttpr-cli -c "
   alttpr-cli update && \
-  echo 'Build from latest' && \
+  echo 'Build from latest.' && \
   alttpr-cli build $BUILD_FLAGS && \
-  echo 'Get gameslist snippet' && \
+  echo 'Get gameslist snippet.' && \
   alttpr-cli gamelist ./daily.json > ./daily.xml
 "
+
 echo "
-Updating of gamelist.xml
+Updating of gamelist.xml.
 "
+
 if [ ! -f $GAMELIST ]; then
   echo "gamelist.xml not found! (GAMELIST: $GAMELIST)"
 else
@@ -114,6 +114,7 @@ else
         DESC=$(xmlstarlet sel -t -v "/game/desc" daily.xml);
         IMAGE=$(xmlstarlet sel -t -v "/game/image" daily.xml);
         MARQUEE=$(xmlstarlet sel -t -v "/game/marquee" daily.xml);
+        GENRE=$(xmlstarlet sel -t -v "/game/genre" daily.xml);
         RELEASE_DATE=$(xmlstarlet sel -t -v "/game/releasedate" daily.xml);
         DEVELOPER=$(xmlstarlet sel -t -v "/game/developer" daily.xml);
         PUBLISHER=$(xmlstarlet sel -t -v "/game/publisher" daily.xml);
@@ -125,6 +126,7 @@ else
             -s //gameTMP -t elem -n image -v "$IMAGE" \
             -s //gameTMP -t elem -n marquee -v "$MARQUEE" \
             -s //gameTMP -t elem -n releasedate -v "$RELEASE_DATE" \
+            -s //gameTMP -t elem -n genre -v "$GENRE" \
             -s //gameTMP -t elem -n developer -v "$DEVELOPER" \
             -s //gameTMP -t elem -n publisher -v "$PUBLISHER" \
             -r //gameTMP -v game \
