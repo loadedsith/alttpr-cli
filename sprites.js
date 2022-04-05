@@ -19,15 +19,22 @@ const spriteNames = spritesJSON.reduce((acc, sprite) => {
 
 const getSpriteUrl = (spriteName) => {
   try {
-    return spritesJSON.find((sprite) => {
+    let file = spritesJSON.find((sprite) => {
       return sprite.name === spriteName;
-    }).file;
+    });
+    if (file) {
+      return file.file;
+    } else {
+      throw new Error('No sprite found in the sprite.json. Did you try `npm run update-sprites`?')
+    }
   } catch (e) {
-    if (e.message.indexOf('read property \'file\' of undefined') > -1) {
+    // Todo: this error is node version specific and needs to be handled in a different way.
+    if (e.message.indexOf('read properties of undefined (reading \'file\')') > -1) {
       throw new Error('No sprite found in the sprite.json. Did you try' +
           ' `npm run update-sprites`?');
+    } else {
+          throw e
     }
-    throw e
   }
 };
 
@@ -38,20 +45,23 @@ const getSpriteFileName = (spriteName) => {
 const downloadSprite = (spriteName, outDir = 'sprites', https_ = https) => {
   return new Promise((resolve, reject) => {
     const spriteUrl = getSpriteUrl(spriteName);
+
+    if (!fs.existsSync(outDir)){
+        fs.mkdirSync(outDir, { recursive: true });
+    }
+    
     https_.get(spriteUrl, (response) => {
       if (response.statusCode == 200 && response.statusCode < 299) {
         const filename = getSpriteFileName(spriteName);
         const file = fs.createWriteStream(`./${outDir}/${filename}`);
         let stream = response.pipe(file);
-
         stream.on('finish', function() {
           file.close();
           resolve();
         });
       } else {
-        reject(`Failed to download ${spriteName}: ${spriteUrl}. ${JSON.stringify(response)}`);
+        reject(new Error(`Failed to download ${spriteName}: [${spriteUrl}]. ${JSON.stringify(response)}`));
       }
-
     });
   });
 };

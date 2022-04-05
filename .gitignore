@@ -8,3 +8,5 @@ sprites
 spec/daily/workspace
 spec/index/workspace
 daily.json
+node_modules
+4slink-armors.1.zspr

@@ -1,6 +1,7 @@
 const zlib = require('zlib');
 const https = require('https');
 const fs = require('fs');
+const {dirname} = require('path');
 
 const downloadFilename = function(patch) {
   return patch.name
@@ -187,7 +188,11 @@ const getCurrentBasePatch = (path='./base_patch.json', write=true) => {
       });
 
       const patch = body.match(/var vt_base_patch = ([^'\n;]*)/)[1];
-
+    
+      if (!fs.existsSync(dirname(path))){
+          fs.mkdirSync(dirname(path), { recursive: true });
+      }
+      
       if (write) {
         fs.writeFileSync(path, patch);
       }

@@ -69,7 +69,7 @@ describe('rom', () => {
   });
   beforeAll(() => {
     let removeTestFiles = [
-      './spec/index/workspace/Daily Challenge: Feb 13, 2019.sfc',
+      './spec/index/workspace/alttpr - Daily Challenge Apr 5, 2022_4AvprPzgGn.sfc',
     ];
     removeTestFiles.forEach((file) => {
       if (fs.existsSync(file)) {
@@ -88,8 +88,8 @@ describe('rom', () => {
   });
 
   it('should build a rom', (done) => {
-    expect(fs.existsSync('./spec/index/workspace/Daily Challenge: Feb' +
-        ' 13, 2019.sfc')).toBe(false);
+    expect(fs.existsSync('./spec/index/workspace/alttpr - Daily Challenge Apr 5, 2022_4AvprPzgGn' +
+        '.sfc')).toBe(false);
 
     randomizerCLI.buildRom('./Zelda no Densetsu - Kamigami no' +
         ' Triforce (Japan).sfc',
@@ -98,12 +98,12 @@ describe('rom', () => {
       'normal',
       'red',
       'normal',
-      'Link',
+      'Four Swords Link',
       './spec/daily.json',
       './spec/index/workspace/'
     ).then(() => {
-      expect(fs.existsSync('./spec/index/workspace/Daily Challenge: Feb' +
-          ' 13, 2019.sfc')).toBe(true);
+      expect(fs.existsSync('./spec/index/workspace/' +
+          'alttpr - Daily Challenge Apr 5, 2022_4AvprPzgGn.sfc')).toBe(true);
       done();
     });
   });
