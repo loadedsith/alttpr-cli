@@ -1,5 +1,6 @@
 const SparkMD5 = require('spark-md5');
 const fs = require('fs');
+const {dirname} = require('path');
 
 var ROM = (function(arrayBuffer, loaded_callback, error_callback) {
   var u_array = [];
@@ -46,6 +47,9 @@ var ROM = (function(arrayBuffer, loaded_callback, error_callback) {
 
   this.save = (filename) => {
     this.updateChecksum().then(() => {
+      if (!fs.existsSync(dirname(filename))){
+          fs.mkdirSync(dirname(filename), { recursive: true });
+      }
       fs.writeFileSync(filename, Buffer.from(new Uint8Array(u_array)));
     });
   };
