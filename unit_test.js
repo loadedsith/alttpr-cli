@@ -4,10 +4,15 @@ const url = require('url');
 const fs = require('fs');
 const path = require('path');
 const nock = require('nock');
-
+const DEBUG = process.env.DEBUG || false;
 let scope;
 
 const parentVersion = '033010ffa898555e2c3724c768e687066f259b39';
+if (DEBUG) {
+  process.on('uncaughtException', function(err) {
+      console.log(err)
+  });  
+}
 
 nock.disableNetConnect();
 describe('autoUpdate', () => {
@@ -90,7 +95,6 @@ describe('rom', () => {
   it('should build a rom', (done) => {
     expect(fs.existsSync('./spec/index/workspace/alttpr - Daily Challenge Apr 5, 2022_4AvprPzgGn' +
         '.sfc')).toBe(false);
-
     randomizerCLI.buildRom('./Zelda no Densetsu - Kamigami no' +
         ' Triforce (Japan).sfc',
       false,
@@ -103,7 +107,7 @@ describe('rom', () => {
       './spec/index/workspace/'
     ).then(() => {
       expect(fs.existsSync('./spec/index/workspace/' +
-          'alttpr - Daily Challenge Apr 5, 2022_4AvprPzgGn.sfc')).toBe(true);
+          'Daily Challenge: Apr 5, 2022.sfc')).toBe(true);
       done();
     });
   });
